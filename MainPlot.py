@@ -1,5 +1,5 @@
 import numpy as np
-
+import DemandCurve
 first_curve_values = [[],[]] #curve for the youngsters
 second_curve_values = [[],[]] #Curve for the adults
 third_curve_values = [[],[]] #Curve for the third age
@@ -18,4 +18,10 @@ def aggDemand(f,s,t,weights):
             agg_curve_values.append(np.avg([f[j][i],s[j][i],t[j][i]],weights))
     return agg_curve_values
 
+def plot_curves(f,s,t):
+    first_curve = DemandCurve(first_curve_values)
+    second_curve = DemandCurve(second_curve_values)
+    third_curve = DemandCurve(third_curve_values)
+    agg_curve = DemandCurve(aggDemand(f, s, t, weights))
 
+plot_curves(first_curve_values,second_curve_values,third_curve_values,weights)

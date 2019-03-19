@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 class DemandCurve():
     def __init__(self, curve_values):
         self.curve_values = curve_values
+        self.plotCurve()
 
     def plotCurve(self):
         plt.figure(0)
