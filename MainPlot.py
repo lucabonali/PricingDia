@@ -31,11 +31,6 @@ def agg_demand(f,s,t,weights):
 
 
 
-# La media per il calcolo dell'aggregata necessita degli stessi valori di prezzo sull'asse X. Rivedere vettori dati
-
-
-
-
 '''
 Plot of the demand curves
 - f: first curve
