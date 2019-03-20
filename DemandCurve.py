@@ -3,14 +3,16 @@ import matplotlib.pyplot as plt
 class DemandCurve():
     def __init__(self, curve_values):
         self.curve_values = curve_values
-        self.plotCurve()
+        self.plot_phases_curve()
 
-    def plotCurve(self):
+
+    '''
+    Plot the demand curves of each phase
+    '''
+    def plot_phases_curve(self):
         plt.figure(0)
         plt.xlabel("Price")
         plt.ylabel("Demand")
-        plt.plot(self.curve_values[0][1], self.curve_values[0][0], linewidth=1, markersize=1)
-        plt.plot(self.curve_values[0][1], self.curve_values[1][0], linewidth=1, markersize=1)
-        plt.plot(self.curve_values[0][1], self.curve_values[2][0], linewidth=1, markersize=1)
-        plt.plot(self.curve_values[0][1], self.curve_values[3][0], linewidth=1, markersize=1)
+        for i in range(len(self.curve_values)):
+            plt.plot(self.curve_values[i][1], self.curve_values[i][0], linewidth=1, markersize=1)
         plt.show()
