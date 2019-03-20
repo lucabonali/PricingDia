@@ -1,0 +1,28 @@
+'''
+SWTS-LEARNER CLASS
+exploits a sliding window to use only recent observations to update the beta distribution parameters
+
+We will define this class as an extension of the TS-Learner class
+'''
+
+from TS_Learner import *
+
+class SWTS_Learner(TS_Learner):
+
+    def __init__(self, n_arms, window_size):
+        super().__init__(n_arms)
+        self.window_size = window_size
+
+    def update(self, pulled_arm, reward):
+        self.t += 1
+        self.update_observations(pulled_arm, reward)
+        # vado a prendere gli ultimi window size rewards e li sommo
+        cum_rew = np.sum(self.rewards_per_arm[pulled_arm][-self.window_size:])
+        n_rounds_arm = len(self.rewards_per_arm[pulled_arm][-self.window_size:])
+
+        self.beta_parameters[pulled_arm, 0] = cum_rew + 1.0
+        self.beta_parameters[pulled_arm, 1] = n_rounds_arm - cum_rew + 1.0
+        # + 1.0 al posto di fare il max
+
+        #La formula è uguale a quella delle slides, però qui non ho proprio la liding window
+        #tengo gli ultimi valori
