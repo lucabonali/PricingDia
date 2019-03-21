@@ -1,9 +1,24 @@
 import matplotlib.pyplot as plt
 
+
+
+'''
+Ho lavorato direttamente con gli array di dati della classe Data
+Ho lasciato il compito di disegnare a MainPlot
+Lascio la classe nel caso ci venga in mente una soluzione più elegante
+'''
+
 class DemandCurve():
     def __init__(self, curve_values):
         self.curve_values = curve_values
-        #self.plot_phases_curve()
+
+
+    '''
+    Return the values of the requested phase:
+    - i: the requested phase
+    '''
+    def get_phase_values(self, i):
+        return self.curve_values[i]
 
 
     '''
