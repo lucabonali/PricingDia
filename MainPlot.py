@@ -33,14 +33,18 @@ def agg_demand(f,s,t,weights):
 
 '''
 Plot of the demand curves
-- f: first curve
-- s: second curve
-- t: third curve
+- f: first curve values
+- s: second curve values
+- t: third curve values
 '''
 def plot_curves(f,s,t):
     first_curve = DemandCurve(first_curve_values)
     #second_curve = DemandCurve(second_curve_values)
     #third_curve = DemandCurve(third_curve_values)
     agg_curve = DemandCurve([f[0], s[0], t[0], agg_demand(f[0], s[0], t[0], weights)])
+
+    first_curve.plot_phases_curve()
+    agg_curve.plot_phases_curve()
+
 
 plot_curves(first_curve_values,second_curve_values,third_curve_values)
