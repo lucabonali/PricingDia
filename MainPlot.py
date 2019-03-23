@@ -1,4 +1,6 @@
 import numpy as np
+
+from Aggregated_Curve import *
 from DemandCurve import *
 import Data
 
@@ -13,35 +15,6 @@ def checkLen(f, s, t):
     return False
 
 
-'''
-Computation of the aggregated curve
-- f: first curve
-- s: second curve
-- t: third curve
-- weights: probabilities of each class
-'''
-def create_aggregate_demand_curve(f, s, t, weights):
-    agg_curve_values = [[[], []], [[], []], [[], []], [[], []]]
-    for k in range(len(f)):
-        for j in range(len(f[k])):
-            for i in range(len(f[k][j])):
-                agg_curve_values[k][j].append(
-                    np.average(a=np.array([f[k][j][i], s[k][j][i], t[k][j][i]]), weights=weights))
-    return agg_curve_values
-
-
-'''
-Demand curve creations:
-one for each class and the aggregated one
-'''
-first_curve = Data.first_curve_values
-second_curve = Data.second_curve_values
-third_curve = Data.third_curve_values
-
-agg_curve = create_aggregate_demand_curve(Data.first_curve_values, Data.second_curve_values,
-                                                      Data.third_curve_values, Data.weights)
-curves = [first_curve, second_curve, third_curve, agg_curve]
-
 
 '''
 Plot the demand curves of the selected phase
@@ -52,8 +25,8 @@ def plot_phase_curves(phase):
     plt.xlabel("Price")
     plt.ylabel("Demand")
     plt.title('Demand curves of phase: %i' %phase)
-    for i in range(len(curves)):
-        plt.plot(curves[i][phase][1], curves[i][phase][0], linewidth=1, markersize=1)
+    for i in range(len(Data.total_curve_values)):
+        plt.plot(Data.total_curve_values[i][phase][1], Data.total_curve_values[i][phase][0], linewidth=1, markersize=1)
     plt.legend(["Class 1", "Class 2", "Class 3", "Aggregated"])
     plt.show()
 
@@ -61,5 +34,5 @@ def plot_phase_curves(phase):
 '''
 Plot of the demand curves for all the phases
 '''
-for p in range(len(curves[0])):
+for p in range(len(Data.total_curve_values[0])):
     plot_phase_curves(p)
