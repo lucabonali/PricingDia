@@ -1,12 +1,14 @@
 from Learner import *
 import numpy as np
+import numpy.linalg as linalg
 
 
 class TS_Learner(Learner):
 
-    def __init__(self, n_arms):
+    def __init__(self, n_arms, margins):
         super().__init__(n_arms)
         self.beta_parameters = np.ones((n_arms, 2))
+        self.margins = margins
 
     '''
     Function that decide which arm pull at each round t,
@@ -15,7 +17,9 @@ class TS_Learner(Learner):
     generate the sample with the maximun value
     '''
     def pull_arm(self):
-        idx = np.argmax(np.random.beta(self.beta_parameters[:, 0], self.beta_parameters[:, 1]))
+        samples_from_beta = np.random.beta(self.beta_parameters[:, 0], self.beta_parameters[:, 1])
+        idx = np.argmax(samples_from_beta * self.margins)
+
         #armax return the position of the maximun value. Quindi in questo caso mi ritorna l'arm da pullare
         #cioè quella con il valore più grande
         return idx
