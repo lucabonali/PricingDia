@@ -9,10 +9,19 @@ from TS_Learner import *
 
 class SWTS_Learner(TS_Learner):
 
+    '''
+    Initialization of the SWTS Learner:
+        - number of arms/candidates
+        - margins associated to the candidates
+        - size of the window
+    '''
     def __init__(self, n_arms, margins, window_size):
         super().__init__(n_arms, margins)
         self.window_size = window_size
 
+    '''
+    Update of the beta parameters considering
+    '''
     def update(self, pulled_arm, reward):
         self.t += 1
         self.update_observations(pulled_arm, reward)

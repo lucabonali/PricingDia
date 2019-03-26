@@ -19,7 +19,7 @@ class Learner:
     Initialization of the Learner:
         - number of arms
         - time
-        - rewards obtained by each arm
+        - rewards obtained by each arm for each round
         - samples obtained by each arm
         - total collected rewards
     '''
@@ -27,14 +27,14 @@ class Learner:
         self.n_arms = n_arms
         self.margins = margins
         self.t = 0
-        self.rewards_per_arm = x = [[] for i in range(n_arms)]
-        self.samples_per_arm = x = [[] for i in range(n_arms)]
+        self.rewards_per_arm = [[] for i in range(n_arms)]
+        self.samples_per_arm = [[] for i in range(n_arms)]
         self.collected_rewards = np.array([])
 
 
     '''
     Update of rewards:
-        - add the obtined reward to the samples
+        - add the obtained reward to the samples
         - add the obtained reward to the selected arm, considering the margin
         - add the obtained reward to the total rewards, considering the margin
     '''

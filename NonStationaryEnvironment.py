@@ -22,11 +22,15 @@ class Non_Stationary_Environment(Environment):
         - cumulative_samples_per_size:
     '''
     def __init__(self, n_arms, probabilities, horizon, samples_per_phase):
-        super().__init__(n_arms, probabilities) #probabilities are the probabilty parameter value for each phase (n_phases x n_arms)
+
+        # probabilities are the probability parameter value for each phase (n_phases x n_arms)
+        super().__init__(n_arms, probabilities)
         self.t = 0
         self.horizon = horizon
         self.phase_sizes = samples_per_phase
-        self.n_phases = len(self.probabilities) #n_phases equals to the number of rows of probability matrix
+
+        # n_phases equals to the number of rows of probability matrix
+        self.n_phases = len(self.probabilities)
         self.cumulative_samples_per_size = np.cumsum(self.phase_sizes)
 
     '''
@@ -39,7 +43,10 @@ class Non_Stationary_Environment(Environment):
                 return i
         return self.n_phases
 
-
+    '''
+    Get the reward of the pulled arm from a Bernoulli distribution,
+    with p = pulled arm probability in the current phase
+    '''
     def round(self, pulled_arm):
         current_phase = self.get_current_phase(self.t)
         p = self.probabilities[current_phase][pulled_arm]

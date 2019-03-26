@@ -55,16 +55,23 @@ agg_curve = Aggregated_Curve(classes_curve_values, weights).agg
 classes_curve_values.append(agg_curve)
 total_curve_values = classes_curve_values
 
-#cost of each unit
+# cost of each unit
 cost_of_unit = 350
-
-def minus_cost(values):
-    return np.array(values) - cost_of_unit
 
 # number of arms/candidates
 n_arms = len(first_curve_values[0][1])
 
-# margin of each arm
+
+def minus_cost(values):
+    return np.array(values) - cost_of_unit
+
+
+'''
+Margin: what we'll gain selling one unit of product at a certain price with a fixed production cost
+In our case:
+
+[-350 -250 -150  -50   50  150  200  250  300  350  400  450  500  550  650  750  850  950 1050]
+'''
 margins = minus_cost(x_values)
 
 
@@ -73,10 +80,10 @@ Samples and phases
 '''
 
 # Samples per day
-samples_per_day = 5
+samples_per_day = 10
 
 # phases
-months_per_phases = [7,3,2,3]
+months_per_phases = [7, 3, 2, 3]
 day_per_months = 30
 day_per_phases = np.dot(months_per_phases, day_per_months)
 samples_per_phase = np.dot(day_per_phases, samples_per_day)
@@ -86,11 +93,11 @@ n_months = sum(months_per_phases)
 t_horizon = n_months * day_per_months * samples_per_day
 
 
-#if n_class = 0 the method return the probability matrix of the first curve
-#if n_class = 1 the method return the probability matrix of the second curve
-#if n_class = 2 the method return the probability matrix of the third curve
-#if n_class = 3 the method return the probability matrix of the aggregate curve
-#the probability matrix have as rows the probabilities of the correspective phase
+# if n_class = 0 the method return the probability matrix of the first curve
+# if n_class = 1 the method return the probability matrix of the second curve
+# if n_class = 2 the method return the probability matrix of the third curve
+# if n_class = 3 the method return the probability matrix of the aggregate curve
+# the probability matrix have as rows the probabilities of the correspective phase
 def get_class_probabilities(n_class):
     res = []
     for p in range(len(total_curve_values[n_class])):
