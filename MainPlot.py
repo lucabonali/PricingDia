@@ -1,7 +1,4 @@
-import numpy as np
-
-from Aggregated_Curve import *
-from DemandCurve import *
+import matplotlib.pyplot as plt
 import Data
 
 

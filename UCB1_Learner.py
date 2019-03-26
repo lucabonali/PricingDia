@@ -1,30 +1,47 @@
 from Learner import *
 import numpy as np
 
-#TODO: metodi
+
 class UCB1_Learner(Learner):
 
-    def __init__(self, n_arms):
-        super().__init__(n_arms)
-        self.beta_parameters = np.ones((n_arms, 2))
+    '''
+    Initialization of the UCB1:
+        - number of arms
+        - margins vector
+        - bound of each arm
+    '''
+    def __init__(self, n_arms, margins):
+        super().__init__(n_arms, margins)
+        self.bounds = np.zeros(n_arms)
 
     '''
-    Function that decide which arm pull at each round t,
-    by sampling a value for each arm from a beta distribution and 
-    then select the arm associated with the beta distribution that
-    generate the sample with the maximun value
+    Selection of the arm:
+        We select the index of the arm with the maximum bound
+        (in case of ties we choose randomly)
     '''
     def pull_arm(self):
-        idx = np.argmax(np.random.beta(self.beta_parameters[:, 0], self.beta_parameters[:, 1]))
-        #armax return the position of the maximun value. Quindi in questo caso mi ritorna l'arm da pullare
-        #cioè quella con il valore più grande
-        return idx
+        if self.t < self.n_arms:
+            return self.t
+        margin_bounds = self.bounds * self.margins
+        idxs = np.argwhere(margin_bounds == margin_bounds.max()).reshape(-1)
+        pulled_arm = np.random.choice(idxs)
+        return pulled_arm
+
 
     '''
     Function that update the parameters of the pulled arm
+        - pulled_arm: the selected arm
+        - reward: the reward
     '''
     def update(self, pulled_arm, reward):
         self.t += 1
         self.update_observations(pulled_arm, reward)
-        self.beta_parameters[pulled_arm, 0] = self.beta_parameters[pulled_arm, 0] + reward
-        self.beta_parameters[pulled_arm, 1] = self.beta_parameters[pulled_arm, 1] + 1 - reward
+
+        # In order to avoid the division by 0,
+        # because at the beginning we have all the arms with no samples
+        if self.t <= self.n_arms:
+            self.bounds[pulled_arm] = np.mean(self.samples_per_arm[pulled_arm])+np.sqrt(2*np.log(self.t)/0.00001)
+        else:
+            self.bounds[pulled_arm] = np.mean(self.samples_per_arm[pulled_arm])+ \
+                                      np.sqrt(2*np.log(self.t)/(len(self.samples_per_arm[pulled_arm])-1))
+

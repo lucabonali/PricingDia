@@ -1,5 +1,9 @@
 from Aggregated_Curve import *
 
+'''
+Curves values
+'''
+
 x_values = [0, 100, 200, 300, 400, 500, 550, 600, 650, 700, 750, 800, 850, 900, 1000, 1100, 1200, 1300, 1400]
 
 # curve for the youngsters
@@ -63,8 +67,13 @@ n_arms = len(first_curve_values[0][1])
 # margin of each arm
 margins = minus_cost(x_values)
 
+
+'''
+Samples and phases
+'''
+
 # Samples per day
-samples_per_day = 24
+samples_per_day = 5
 
 # phases
 months_per_phases = [7,3,2,3]
