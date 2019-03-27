@@ -80,7 +80,7 @@ Samples and phases
 '''
 
 # Samples per day
-samples_per_day = 10
+samples_per_day = 50
 
 # phases
 months_per_phases = [7, 3, 2, 3]
