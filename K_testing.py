@@ -8,8 +8,6 @@ Sequential K-testing
 
     - H0: no change
     - H1: better change
-    
-    - We've 2 normal distribution for the candidates
 
 https://towardsdatascience.com/the-math-behind-a-b-testing-with-example-code-part-1-of-2-7be752e1d06f
 
