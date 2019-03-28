@@ -76,6 +76,11 @@ margins = minus_cost(x_values)
 
 
 '''
+K-testing stuff
+'''
+k_testing_candidates = [[(x_values[i], agg_curve[p][0][i], margins[i]) for i in range(len(x_values))] for p in range(len(first_curve_values))]
+
+'''
 Samples and phases
 '''
 
