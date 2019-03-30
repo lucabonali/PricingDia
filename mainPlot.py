@@ -2,22 +2,18 @@ import matplotlib.pyplot as plt
 import Data
 
 
-'''
-Control function
-'''
-def checkLen(f, s, t):
-    if (len(f[0]) == len(s[0]) == len(t[0])):
-        if (len(f[1]) == len(s[1]) == len(t[1])):
-            return True
-    return False
+"""
+Module for the plotting of the graps:
+    - demands
+    - rewards
+"""
 
 
-
-'''
-Plot the demand curves of the selected phase
-phase: the selected phase
-'''
 def plot_phase_curves(phase):
+    """
+    Plot the demand curves of the selected phase
+    :param phase: the selected phase
+    """
     plt.figure(0)
     plt.xlabel("Price")
     plt.ylabel("Demand")
@@ -29,6 +25,10 @@ def plot_phase_curves(phase):
 
 
 def plot_rewards(phase):
+    """
+    Plot the reward curves of the selected phase
+    :param phase:
+    """
     plt.figure(0)
     plt.xlabel("Price")
     plt.ylabel("Reward")
@@ -38,8 +38,9 @@ def plot_rewards(phase):
     plt.legend(["Class 1", "Class 2", "Class 3", "Aggregated"])
     plt.show()
 
+
 '''
-Plot of the demand curves for all the phases
+Plotting of the demands and the rewards
 '''
 for p in range(len(Data.total_curve_values[0])):
     plot_phase_curves(p)

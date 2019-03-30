@@ -5,7 +5,7 @@ from SWUCB1_Learner import *
 import matplotlib.pyplot as plt
 
 
-n_arms = Data.n_arms
+n_arms = Data.n_candidates
 
 p_class1 = Data.get_class_probabilities(0)
 p_class2 = Data.get_class_probabilities(1)
