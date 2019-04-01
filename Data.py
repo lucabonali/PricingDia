@@ -1,12 +1,11 @@
-from Aggregated_Curve import *
-
-
 """
 Module with the data of the project:
     - Phases and time horizon
     - Demand curves
     - Margins
 """
+
+from AggregatedCurve import *
 
 
 '''
@@ -69,7 +68,7 @@ classes_curve_values = [first_curve_values, second_curve_values, third_curve_val
 weights = [0.375, 0.425, 0.2]
 
 # Aggregated Curve
-agg_curve = Aggregated_Curve(classes_curve_values, weights).agg
+agg_curve = AggregatedCurve(classes_curve_values, weights).agg
 
 # All curve values (with also the aggregate)
 classes_curve_values.append(agg_curve)
@@ -121,9 +120,6 @@ k_testing_candidates = [[(x_values[i], agg_curve[p][0][i], margins[i]) for i in 
                         range(len(first_curve_values))]
 
 
-
-
-
-# mettere un parametro che si riferisce al numero di samples, in modo da provare un po' per quali valori è meglio l'aggragate e
-# per qualiè meglio il disaggregate. Così da vedere quale usare nel caso in cui nel mondo realte ne possiamo ottenere tot al giorno
-# bias variance tradeoff
+# mettere un parametro che si riferisce al numero di samples, in modo da provare un po' per quali valori è meglio
+# l'aggragate e per qualiè meglio il disaggregate. Così da vedere quale usare nel caso in cui nel mondo realte
+# ne possiamo ottenere tot al giorno bias variance tradeoff

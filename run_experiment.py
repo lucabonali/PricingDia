@@ -28,16 +28,16 @@ swucb1_reward_per_experiment = []
 for e in range(n_experiments):
     print("experiment number: {}".format(e))
 
-    ts_env = Non_Stationary_Environment(n_arms=n_arms, probabilities=p_agg, horizon=t_horizon, samples_per_phase=Data.samples_per_phase)
+    ts_env = NonStationaryEnvironment(n_arms=n_arms, probabilities=p_agg, horizon=t_horizon, samples_per_phase=Data.samples_per_phase)
     ts_learner = TS_Learner(n_arms=n_arms, margins=margins)
 
-    ucb1_env = Non_Stationary_Environment(n_arms=n_arms, probabilities=p_agg, horizon=t_horizon, samples_per_phase=Data.samples_per_phase)
+    ucb1_env = NonStationaryEnvironment(n_arms=n_arms, probabilities=p_agg, horizon=t_horizon, samples_per_phase=Data.samples_per_phase)
     ucb1_learner = UCB1_Learner(n_arms=n_arms, margins=margins)
 
-    swts_env = Non_Stationary_Environment(n_arms=n_arms, probabilities=p_agg, horizon=t_horizon, samples_per_phase=Data.samples_per_phase)
+    swts_env = NonStationaryEnvironment(n_arms=n_arms, probabilities=p_agg, horizon=t_horizon, samples_per_phase=Data.samples_per_phase)
     swts_learner = SWTS_Learner(n_arms=n_arms, window_size=window_size, margins=margins)
 
-    swucb1_env = Non_Stationary_Environment(n_arms=n_arms, probabilities=p_agg, horizon=t_horizon, samples_per_phase=Data.samples_per_phase)
+    swucb1_env = NonStationaryEnvironment(n_arms=n_arms, probabilities=p_agg, horizon=t_horizon, samples_per_phase=Data.samples_per_phase)
     swucb1_learner = SWUCB1_Learner(n_arms=n_arms, window_size=window_size, margins=margins)
 
     for t in range(0, t_horizon):

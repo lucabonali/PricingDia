@@ -1,15 +1,7 @@
-'''
-LEARNER CLASS (SuperClass of the TS algorithm and the UCB1 algorithm)
-
-A learner object is defined by:
-	- the number of arms that he can pull;
-	- the current round;
-	- the list of the collected rewards.
-
-The learner interacts with the environment by selecting the arm to pull
-at each round and observing the reward given by the environment.
-
-'''
+"""
+SuperClass of the TS algorithm and the UCB1 algorithm.
+It performs the update of the rewards of the learner
+"""
 
 import numpy as np
 
@@ -37,7 +29,7 @@ class Learner:
         """
         Update of the rewards and samples matrices after a sample is observed. Update of the total rewards.
         :param pulled_arm: the selected arm associated to the candidate
-        :param reward: the result of the sample
+        :param reward: the reward of the environment
         """
         self.samples_per_arm[pulled_arm].append(reward)
         self.rewards_per_arm[pulled_arm].append(reward * self.margins[pulled_arm])

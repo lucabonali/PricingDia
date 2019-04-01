@@ -1,13 +1,12 @@
-import scipy.stats as scs
-import numpy as np
-from math import *
-
-
 """
-Sequential K-testing:
+Class that perform the sequential K-testing:
     - H0: u1 = u2 -> try the new price
     - H1: u1 > u2 -> keep the old price u1
 """
+
+import scipy.stats as scs
+import numpy as np
+from math import *
 
 
 class KTesting():

@@ -1,13 +1,12 @@
-import Data
-from KTesting import *
-
-
 """
 Module for the k-testing experiment:
     - alpha: significance level
     - beta: power level
     - delta: alternative hypothesis relaxing coefficient
 """
+
+import Data
+from KTesting import *
 
 # Tester parameters
 alpha = 0.005

@@ -3,7 +3,7 @@ import Data
 
 
 """
-Module for the plotting of the graps:
+Module for the plotting of the graphs:
     - demands
     - rewards
 """

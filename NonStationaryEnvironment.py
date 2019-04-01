@@ -1,53 +1,48 @@
-'''
-The parameters of probability distributions of the arms change during time
-
-NON - STATIONARY ENVIROMENT CLASS
-A Non - Stationary Environment is an Environment in which the arms reward functions
-are dependent from the current time.
-    - We need to specify, for each arm, a reward function which is dependent from the current time.
-We will define this class as an extension of the Environment CLASS
-'''
+"""
+Non-stationary Environment.
+The time horizon is divided into phases
+"""
 
 from Enviroment import *
 
-class Non_Stationary_Environment(Environment):
 
-    '''
-    Initialization of the Non-stat. environment:
-        - number of arms/candidates
-        - probabilities associated to each phase
-        - time initialization
-        - time horizon
-        - number of phases
-        - cumulative_samples_per_size:
-    '''
+class NonStationaryEnvironment(Environment):
+
     def __init__(self, n_arms, probabilities, horizon, samples_per_phase):
-
-        # probabilities are the probability parameter value for each phase (n_phases x n_arms)
+        """
+        Initialization of the Non-stationary Environment:
+        :param n_arms: number of candidates
+        :param probabilities: probabilities of such candidates
+        :param horizon: time horizon
+        :param samples_per_phase: number of samples for each phase
+        :self t: time initialization
+        :self n_phases: number of phases in the time horizon
+        :self cumulative_samples_per_phase: time breakpoints, when the phase changes
+        """
         super().__init__(n_arms, probabilities)
         self.t = 0
         self.horizon = horizon
         self.phase_sizes = samples_per_phase
-
-        # n_phases equals to the number of rows of probability matrix
         self.n_phases = len(self.probabilities)
-        self.cumulative_samples_per_size = np.cumsum(self.phase_sizes)
+        self.cumulative_samples_per_phase = np.cumsum(self.phase_sizes)
 
-    '''
-    Get the current phase:
-        - time: the current time instant
-    '''
     def get_current_phase(self, time):
+        """
+        Get the current phase
+        :param time: the current time instant
+        :return: the current phase
+        """
         for i in range(self.n_phases):
-            if(time < self.cumulative_samples_per_size[i]):
+            if time < self.cumulative_samples_per_phase[i]:
                 return i
         return self.n_phases
 
-    '''
-    Get the reward of the pulled arm from a Bernoulli distribution,
-    with p = pulled arm probability in the current phase
-    '''
     def round(self, pulled_arm):
+        """
+        Get the reward of the selected arm considering the current phase
+        :param pulled_arm: the learner selected arm
+        :return: conversion rate reward (taken from a Bernoulli distribution)
+        """
         current_phase = self.get_current_phase(self.t)
         p = self.probabilities[current_phase][pulled_arm]
         self.t += 1

@@ -1,34 +1,27 @@
-'''
-ENVIRONMENT CLASS
-
-The environment is defined by:
-	- a number of arms;
-	- a probability distribution for each arm reward function.
-
-The environment interacts with the learner by returning a stochastic
-reward depending on the pulled arm.
-'''
+"""
+SuperClass of NonStationaryEnvironment.
+It interacts with the learner by returning a stochastic reward
+"""
 
 import numpy as np
 
 
 class Environment:
 
-    '''
-    Initialization of the Environment:
-        - number of arms/candidates
-        - probabilities of such candidates
-    '''
     def __init__(self, n_arms, probabilities):
+        """
+        Initialization of the Environment:
+        :param n_arms: number of candidates
+        :param probabilities: probabilities of such candidates
+        """
         self.n_arms = n_arms
         self.probabilities = probabilities
 
-    '''
-    Get the reward of the pulled arm from a Bernoulli distribution,
-    with p = pulled arm probability
-    '''
     def round(self, pulled_arm):
-        # n: numero di prove effettuate.
-        # p: probabilità di successo della singola prova di Bernoulli
+        """
+        Get the reward of the selected arm
+        :param pulled_arm: the learner selected arm
+        :return: conversion rate reward (taken from a Bernoulli distribution)
+        """
         reward = np.random.binomial(1, self.probabilities[pulled_arm])
         return reward
