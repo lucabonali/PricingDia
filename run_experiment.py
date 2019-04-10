@@ -42,7 +42,6 @@ for e in range(n_experiments):
 
     for t in range(0, t_horizon):
 
-        '''
         pulled_arm = ts_learner.pull_arm()
         reward = ts_env.round(pulled_arm)
         ts_learner.update(pulled_arm, reward)
@@ -54,11 +53,6 @@ for e in range(n_experiments):
         pulled_arm = swts_learner.pull_arm()
         reward = swts_env.round(pulled_arm)
         swts_learner.update(pulled_arm, reward)
-
-        pulled_arm = swucb1_learner.pull_arm()
-        reward = swucb1_env.round(pulled_arm)
-        swucb1_learner.update(pulled_arm, reward)
-        '''
 
         pulled_arm = swucb1_learner.pull_arm()
         reward = swucb1_env.round(pulled_arm)
@@ -96,25 +90,25 @@ for i in range(n_phases):
     # print(opt_per_round[i*phases_lenght[i] : (i+1)*phases_lenght[i]])
     if i == 0:
         # print(opt_per_phases[i])
-        # ts_instantaneous_regret[0: cumulative_samples[i]] = opt_per_phases[i] - np.mean(ts_reward_per_experiment, axis=0)[0 : cumulative_samples[i]]
-        # ucb1_instantaneous_regret[0: cumulative_samples[i]] = opt_per_phases[i] - np.mean(ucb1_reward_per_experiment, axis=0)[0 : cumulative_samples[i]]
-        # swts_instantaneous_regret[0: cumulative_samples[i]] = opt_per_phases[i] - np.mean(swts_reward_per_experiment, axis=0)[0 : cumulative_samples[i]]
+        ts_instantaneous_regret[0: cumulative_samples[i]] = opt_per_phases[i] - np.mean(ts_reward_per_experiment, axis=0)[0 : cumulative_samples[i]]
+        ucb1_instantaneous_regret[0: cumulative_samples[i]] = opt_per_phases[i] - np.mean(ucb1_reward_per_experiment, axis=0)[0 : cumulative_samples[i]]
+        swts_instantaneous_regret[0: cumulative_samples[i]] = opt_per_phases[i] - np.mean(swts_reward_per_experiment, axis=0)[0 : cumulative_samples[i]]
         swucb1_instantaneous_regret[0: cumulative_samples[i]] = opt_per_phases[i] - np.mean(swucb1_reward_per_experiment, axis=0)[0: cumulative_samples[i]]
 
     else:
-        # ts_instantaneous_regret[cumulative_samples[i-1] : cumulative_samples[i]] = opt_per_phases[i] -\
-        #                                                                           np.mean(ts_reward_per_experiment, axis=0)[cumulative_samples[i-1] : cumulative_samples[i]]
+        ts_instantaneous_regret[cumulative_samples[i-1] : cumulative_samples[i]] = opt_per_phases[i] -\
+                                                                                  np.mean(ts_reward_per_experiment, axis=0)[cumulative_samples[i-1] : cumulative_samples[i]]
 
-        # ucb1_instantaneous_regret[cumulative_samples[i-1] : cumulative_samples[i]] = opt_per_phases[i] -\
-        #                                                                           np.mean(ucb1_reward_per_experiment, axis=0)[cumulative_samples[i-1] : cumulative_samples[i]]
+        ucb1_instantaneous_regret[cumulative_samples[i-1] : cumulative_samples[i]] = opt_per_phases[i] -\
+                                                                                  np.mean(ucb1_reward_per_experiment, axis=0)[cumulative_samples[i-1] : cumulative_samples[i]]
 
-        # swts_instantaneous_regret[cumulative_samples[i - 1]: cumulative_samples[i]] = opt_per_phases[i] - \
-        #                                                                           np.mean(swts_reward_per_experiment, axis=0)[cumulative_samples[i-1] : cumulative_samples[i]]
+        swts_instantaneous_regret[cumulative_samples[i - 1]: cumulative_samples[i]] = opt_per_phases[i] - \
+                                                                                  np.mean(swts_reward_per_experiment, axis=0)[cumulative_samples[i-1] : cumulative_samples[i]]
 
         swucb1_instantaneous_regret[cumulative_samples[i - 1]: cumulative_samples[i]] = opt_per_phases[i] - \
                                                                                   np.mean(swucb1_reward_per_experiment, axis=0)[cumulative_samples[i-1] : cumulative_samples[i]]
 
-'''
+
 plt.figure(0)
 plt.ylabel("Reward TS and SWTS")
 plt.xlabel("t")
@@ -134,15 +128,15 @@ plt.plot(np.cumsum(ucb1_instantaneous_regret), 'g')
 plt.plot(np.cumsum(swucb1_instantaneous_regret), 'y')
 plt.legend(["TS", "SWTS", "UCB1", "SWUCB1"])
 plt.show()
-'''
+
 
 
 plt.figure(2)
 plt.ylabel("Reward UCB1 and SWUCB1")
 plt.xlabel("t")
-#plt.plot(np.mean(ucb1_reward_per_experiment, axis=0), 'g')
+plt.plot(np.mean(ucb1_reward_per_experiment, axis=0), 'g')
 plt.plot(np.mean(swucb1_reward_per_experiment, axis=0), 'y')
 plt.plot(opt_per_round, '--k')
-#plt.legend(["UCB1", "SWUCB1", "Optimum"])
+plt.legend(["UCB1", "SWUCB1", "Optimum"])
 plt.show()
 

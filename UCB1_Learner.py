@@ -34,14 +34,16 @@ class UCB1_Learner(Learner):
         - reward: the reward
     '''
     def update(self, pulled_arm, reward):
-        self.t += 1
         self.update_observations(pulled_arm, reward)
 
         # In order to avoid the division by 0,
         # because at the beginning we have all the arms with no samples
-        if self.t <= self.n_arms:
+        if self.t < self.n_arms:
             self.bounds[pulled_arm] = np.mean(self.samples_per_arm[pulled_arm])+np.sqrt(2*np.log(self.t)/0.00001)
+            if self.t == 0:
+                self.bounds[pulled_arm] = np.mean(self.samples_per_arm[pulled_arm])+np.sqrt(0.0001/0.00001)
         else:
             self.bounds[pulled_arm] = np.mean(self.samples_per_arm[pulled_arm])+ \
                                       np.sqrt(2*np.log(self.t)/(len(self.samples_per_arm[pulled_arm])-1))
+        self.t += 1
 

@@ -18,7 +18,7 @@ Phases and time horizon:
 months_per_phases = [7, 3, 2, 3]
 day_per_months = 30
 
-samples_per_day = 20  # 50
+samples_per_day = 20
 
 day_per_phases = np.dot(months_per_phases, day_per_months)
 samples_per_phase = np.dot(day_per_phases, samples_per_day)
