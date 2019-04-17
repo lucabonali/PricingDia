@@ -15,13 +15,18 @@ Phases and time horizon:
     - Holiday: [Gic, Gen]
     - New model: [Feb, Mar, Apr]
 '''
+#months_per_phases = [15, 0, 0, 0]
 months_per_phases = [7, 3, 2, 3]
 day_per_months = 30
 
-samples_per_day = 20
+samples_per_day = 1
+samples_per_week = samples_per_day * 7
+samples_per_month = samples_per_week * 4
 
 day_per_phases = np.dot(months_per_phases, day_per_months)
 samples_per_phase = np.dot(day_per_phases, samples_per_day)
+
+samples_per_phase = [int(i) for i in samples_per_phase]
 
 # Time Horizon
 n_months = sum(months_per_phases)
@@ -73,7 +78,8 @@ agg_curve = AggregatedCurve(classes_curve_values, weights).agg
 # All curve values (with also the aggregate)
 classes_curve_values.append(agg_curve)
 total_curve_values = classes_curve_values
-
+def get_all_probabilities():
+    return np.array(total_curve_values).squeeze()
 
 def get_class_probabilities(n_class):
     """
@@ -96,6 +102,7 @@ def get_class_probabilities(n_class):
 '''
 Margins: what we'll gain selling one unit of product at a certain price with a fixed production cost
 '''
+
 
 
 def minus_cost(values):

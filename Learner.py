@@ -34,3 +34,6 @@ class Learner:
         self.samples_per_arm[pulled_arm].append(reward)
         self.rewards_per_arm[pulled_arm].append(reward * self.margins[pulled_arm])
         self.collected_rewards = np.append(self.collected_rewards, reward * self.margins[pulled_arm])
+
+    def get_last_reward(self):
+        return self.collected_rewards[-1]

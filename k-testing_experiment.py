@@ -3,6 +3,8 @@ Module for the k-testing experiment:
     - alpha: significance level
     - beta: power level
     - delta: alternative hypothesis relaxing coefficient
+
+NB: K-Testing is done considering only one phase
 """
 
 import Data
@@ -15,7 +17,6 @@ delta = 0.05
 
 candidates = Data.k_testing_candidates
 
-#TODO: chiedere al prof se il k-testing dobbiamo farlo per ogni fase (strano perchè noi le fasi non dovremmo saperle)
 # Computation of the best candidate for each phase
 best_candidates = []
 for p in range(len(Data.total_curve_values[0])):

@@ -17,7 +17,7 @@ margins = Data.margins
 t_horizon = Data.t_horizon
 window_size = int(np.sqrt(t_horizon))
 
-n_experiments = 100
+n_experiments = 1
 
 ts_reward_per_experiment = []
 ucb1_reward_per_experiment = []
@@ -71,13 +71,19 @@ swucb1_instantaneous_regret = np.zeros(t_horizon)
 
 n_phases = len(p_agg)
 phases_length = Data.samples_per_phase
+print("number of phases: " + n_phases.__str__())
+print("phases lenght: " + phases_length.__str__())
 
 rewards_per_phases = []
+print(p_agg.shape)
 for p in range(n_phases):
     rewards_per_phases.append(p_agg[p] * margins)
 
+print("reward per phases: " + rewards_per_phases.__str__())
+
 
 opt_per_phases = np.array(rewards_per_phases).max(axis=1)
+print("optimum per phases: " + opt_per_phases.__str__())
 opt_per_round = np.zeros(t_horizon)
 
 cumulative_samples = np.cumsum(phases_length)

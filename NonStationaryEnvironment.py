@@ -49,3 +49,6 @@ class NonStationaryEnvironment(Environment):
 
         reward = np.random.binomial(1, p)
         return reward
+
+    def inc_time(self):
+        self.t += 1
