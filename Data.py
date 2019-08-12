@@ -12,10 +12,10 @@ from AggregatedCurve import *
 Phases and time horizon:
     - Launch phase: [Feb, Mar, Apr]
     - New competitor's product: [Set, Ott, Nov]
-    - Holiday: [Gic, Gen]
+    - Holiday: [Dic, Gen]
     - New model: [Feb, Mar, Apr]
 '''
-#months_per_phases = [15, 0, 0, 0]
+# months_per_phases = [15, 0, 0, 0]
 months_per_phases = [7, 3, 2, 3]
 day_per_months = 30
 
@@ -78,8 +78,11 @@ agg_curve = AggregatedCurve(classes_curve_values, weights).agg
 # All curve values (with also the aggregate)
 classes_curve_values.append(agg_curve)
 total_curve_values = classes_curve_values
+
+
 def get_all_probabilities():
     return np.array(total_curve_values).squeeze()
+
 
 def get_class_probabilities(n_class):
     """
