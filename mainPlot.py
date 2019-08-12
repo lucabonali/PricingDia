@@ -16,11 +16,14 @@ def plot_single_curves(phase, class_num):
     :param class_num: the selected class
     """
     legend = {0: "Class 1", 1: "Class 2", 2: "Class 3", 3: "Aggregated"}
+    colors = {0: 'C0', 1: 'C1', 2: 'C2', 3: 'C3'}
     plt.figure(0)
     plt.xlabel("Price")
     plt.ylabel("Demand")
+    plt.ylim(0, 1.1)
     plt.title("Demand curve of {} of phase: {}".format(legend.get(class_num), phase))
-    plt.plot(Data.total_curve_values[class_num][phase][1], Data.total_curve_values[class_num][phase][0], linewidth=1, markersize=1)
+    plt.plot(Data.total_curve_values[class_num][phase][1], Data.total_curve_values[class_num][phase][0],
+             colors.get(class_num), linewidth=1, markersize=1)
     plt.legend([legend.get(class_num)])
     plt.show()
 
@@ -33,12 +36,14 @@ def plot_phase_curves(phase):
     plt.figure(0)
     plt.xlabel("Price")
     plt.ylabel("Demand")
-    plt.title('Demand curves of phase: %i' %phase)
+    plt.ylim(0, 1.1)
+    plt.title('Demand curves of phase: %i' % phase)
     for i in range(len(Data.total_curve_values)):
         linewidth = 1
         if i == 3:
             linewidth = 3
-        plt.plot(Data.total_curve_values[i][phase][1], Data.total_curve_values[i][phase][0], linewidth=linewidth, markersize=1)
+        plt.plot(Data.total_curve_values[i][phase][1], Data.total_curve_values[i][phase][0], linewidth=linewidth,
+                 markersize=1)
     plt.legend(["Class 1", "Class 2", "Class 3", "Aggregated"])
     plt.show()
 
