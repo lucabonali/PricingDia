@@ -17,7 +17,7 @@ margins = Data.margins
 t_horizon = Data.t_horizon
 window_size = int(np.sqrt(t_horizon))
 
-n_experiments = 1
+n_experiments = 100
 
 ts_reward_per_experiment = []
 ucb1_reward_per_experiment = []

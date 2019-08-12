@@ -21,7 +21,7 @@ def plot_single_curves(phase, class_num):
     plt.xlabel("Price")
     plt.ylabel("Demand")
     plt.ylim(0, 1.1)
-    plt.title("Demand curve of {} of phase: {}".format(legend.get(class_num), phase))
+    plt.title("Demand curve of {} of phase: {}".format(legend.get(class_num), phase+1))
     plt.plot(Data.total_curve_values[class_num][phase][1], Data.total_curve_values[class_num][phase][0],
              colors.get(class_num), linewidth=1, markersize=1)
     plt.legend([legend.get(class_num)])
@@ -37,7 +37,7 @@ def plot_phase_curves(phase):
     plt.xlabel("Price")
     plt.ylabel("Demand")
     plt.ylim(0, 1.1)
-    plt.title('Demand curves of phase: %i' % phase)
+    plt.title('Demand curves of phase: {}'.format(phase+1))
     for i in range(len(Data.total_curve_values)):
         linewidth = 1
         if i == 3:
@@ -56,7 +56,7 @@ def plot_rewards(phase):
     plt.figure(0)
     plt.xlabel("Price")
     plt.ylabel("Reward")
-    plt.title('Reward curves of phase: %i' % phase)
+    plt.title('Reward curves of phase: {}'.format(phase+1))
     for i in range(len(Data.total_curve_values)):
         linewidth = 1
         if i == 3:

@@ -19,7 +19,7 @@ Phases and time horizon:
 months_per_phases = [7, 3, 2, 3]
 day_per_months = 30
 
-samples_per_day = 1
+samples_per_day = 20
 samples_per_week = samples_per_day * 7
 samples_per_month = samples_per_week * 4
 
