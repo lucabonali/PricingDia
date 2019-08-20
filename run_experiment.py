@@ -16,7 +16,8 @@ margins = Data.margins
 
 t_horizon = Data.t_horizon
 # window_size = int(np.sqrt(t_horizon))
-window_size = int(t_horizon / 10)
+# window_size = int(t_horizon / 10)
+window_size = 500
 
 n_experiments = 50
 

@@ -66,15 +66,16 @@ class SWUCB1_Learner(UCB1_Learner):
                     self.samples_per_arm[i] = self.samples_per_arm[i][1:]
                     if len(self.sample_timestamp[i]) == 0:
                         break
-        self.t += 1
 
         # 2. Update the confidence bounds of all the arms since the window has been moved
         self.update_observations(pulled_arm, reward)
 
         for i in range(self.n_arms):
             if len(self.sample_timestamp[i]) == 0:
-                self.bounds[pulled_arm] = 1
+                self.bounds[pulled_arm] = 0
             else:
-                n_rounds_arm = len(self.samples_per_arm[i])-1
+                n_rounds_arm = len(self.samples_per_arm[i])
                 windowed_mean = np.mean(self.samples_per_arm[i])
-                self.bounds[i] = windowed_mean+np.sqrt(2*np.log(self.t)/n_rounds_arm)
+                self.bounds[i] = windowed_mean+np.sqrt(2*np.log(self.t+1)/n_rounds_arm)
+
+        self.t += 1
