@@ -15,11 +15,11 @@ Phases and time horizon:
     - Holiday: [Gic, Gen]
     - New model: [Feb, Mar, Apr]
 '''
-#months_per_phases = [15, 0, 0, 0]
-months_per_phases = [7, 3, 2, 3]
+months_per_phases = [3, 3, 2, 3]
+#months_per_phases = [5, 0, 0, 0]
 day_per_months = 30
 
-samples_per_day = 1
+samples_per_day = 10
 samples_per_week = samples_per_day * 7
 samples_per_month = samples_per_week * 4
 
@@ -99,12 +99,6 @@ def get_class_probabilities(n_class):
     return np.array(res)
 
 
-'''
-Margins: what we'll gain selling one unit of product at a certain price with a fixed production cost
-'''
-
-
-
 def minus_cost(values):
     """
     Margin computation
@@ -117,6 +111,7 @@ def minus_cost(values):
 # Cost of one unit of product
 cost_of_unit = 350
 
+#Margins: what we'll gain selling one unit of product at a certain price with a fixed production cost
 margins = minus_cost(x_values)
 
 

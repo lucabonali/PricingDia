@@ -1,10 +1,10 @@
-#In this file, differently from the other run_experiment file, each first day of each week an alghoritm that decides if
-#disaggregate or not is executed.
+#In this file, the comparison between alghotritm wit aggregate curve and alghpritm with disaggregate curves
 
 import Data
 from NonStationaryEnvironment import *
 from SWTS_Learner import *
 import matplotlib.pyplot as plt
+from sys import stdout
 
 n_arms = Data.n_candidates
 
@@ -22,10 +22,10 @@ class_probabilities = Data.weights
 aggregate = True
 
 #time at which the alghoritm choose to disaggregate
-disaggregation_time = Data.t_horizon
+#disaggregation_time = Data.t_horizon
 
 #all the dissaggregation time of the experiments
-disaggregation_times = []
+#disaggregation_times = []
 margins = Data.margins
 
 t_horizon = int(Data.t_horizon)
@@ -40,6 +40,7 @@ cl1_reward_per_experiment = []
 cl2_reward_per_experiment = []
 disagg_reward_per_experiment = []
 
+'''
 def check_aggregation(disag_learners, disagg_reward, agg_learner, time):
     """
     Check if it's better the aggregation curve or the disaggregate curves
@@ -66,12 +67,15 @@ def check_aggregation(disag_learners, disagg_reward, agg_learner, time):
     else:
         return True, Data.t_horizon
 
-
+'''
 
 
 
 for e in range(n_experiments):
-    print("experiment number: {}".format(e))
+    stdout.write("\rexperiment number: %d" %e)
+    stdout.flush()
+    #print("\rexperiment number: {}".format(e))
+
 
     #creation of the learners
     agg_ts_learner = TS_Learner(n_arms=n_arms, margins=margins)
@@ -99,11 +103,13 @@ for e in range(n_experiments):
     aggregate = True
     disagg_reward = []
     for t in range(0, t_horizon):
+        '''
         #if it's the firts day of the week, the alghoritm check if is better the aggregate cure or the disaggregate ones
         if ((t % Data.samples_per_week) == 0) and aggregate:
             aggregate, disaggregation_time = check_aggregation(disag_learners, disagg_reward, agg_ts_learner, t)
             if not aggregate:
                 disaggregation_times.append(disaggregation_time)
+        '''
 
         #run the aggregate
         pulled_arm = agg_ts_learner.pull_arm()
@@ -168,7 +174,7 @@ opt_per_round_cl2 = np.zeros(t_horizon)
 
 cumulative_samples = np.cumsum(phases_length)
 
-disaggregation_time = int(np.mean(np.array(disaggregation_times)))
+#disaggregation_time = int(np.mean(np.array(disaggregation_times)))
 #disaggregation_time = int(3 / 4 * t_horizon)
 #print("mean of disaggregation time: {}".format(disaggregation_time))
 
@@ -191,7 +197,8 @@ for i in range(n_phases):
                                                             np.mean(agg_ts_reward_per_experiment, axis=0)[0 : cumulative_samples[i]]
         disagg_ts_instantaneous_regret [0:cumulative_samples[i]] = opt_per_phases[i] - \
                                                            np.mean(disagg_reward_per_experiment, axis=0)[
-                                                           0 : cumulative_samples[i]]
+                                                          0 : cumulative_samples[i]]
+        '''
         # print(opt_per_phases[i])
         if cumulative_samples[i] <= disaggregation_time:
             #print("\tsetting the aggr regr")
@@ -207,7 +214,7 @@ for i in range(n_phases):
             instantaneous_regret[disaggregation_time : cumulative_samples[i]] = opt_per_phases[i] - \
                                                            np.mean(disagg_reward_per_experiment, axis=0)[
                                                            disaggregation_time : cumulative_samples[i]]
-
+        '''
     else:
         agg_ts_instantaneous_regret[cumulative_samples[i-1]:cumulative_samples[i]] = opt_per_phases[i] - \
                                                                np.mean(agg_ts_reward_per_experiment, axis=0)[
@@ -215,7 +222,7 @@ for i in range(n_phases):
         disagg_ts_instantaneous_regret[cumulative_samples[i-1]:cumulative_samples[i]] = opt_per_phases[i] - \
                                                                   np.mean(disagg_reward_per_experiment, axis=0)[
                                                                   cumulative_samples[i-1]: cumulative_samples[i]]
-
+        '''
         if cumulative_samples[i] <= disaggregation_time :
             #print("setting the aggr regr")
             instantaneous_regret[cumulative_samples[i-1] : cumulative_samples[i]] = opt_per_phases[i] -\
@@ -236,23 +243,23 @@ for i in range(n_phases):
             instantaneous_regret[disaggregation_time : cumulative_samples[i]] = opt_per_phases[i] - \
                                                                                 np.mean(disagg_reward_per_experiment, axis=0)[
                                                                                 disaggregation_time : cumulative_samples[i]]
-
+        '''
 
 #print("\n\n optimum per round: {}".format(opt_per_round))
-
+'''
 final_reward = np.append(np.mean(agg_ts_reward_per_experiment, axis=0)[0:disaggregation_time],
                          np.mean(disagg_reward_per_experiment, axis=0)[disaggregation_time:])
-
+'''
 plt.figure(0)
 plt.ylabel("Reward")
 plt.xlabel("t")
-plt.plot(final_reward, 'r')
+#plt.plot(final_reward, 'r')
 plt.plot(opt_per_round, '--k')
 plt.legend(["Mixed Alghoritm"])
 #plt.plot(opt_per_round_cl0, '--k')
 #plt.plot(opt_per_round_cl1, '--k')
 #plt.plot(opt_per_round_cl2, '--k')
-plt.axvline(disaggregation_time)
+#plt.axvline(disaggregation_time)
 plt.show()
 
 plt.figure(1)
@@ -261,12 +268,12 @@ plt.ylabel("Regret")
 plt.plot(np.cumsum(instantaneous_regret), 'r')
 plt.plot(np.cumsum(agg_ts_instantaneous_regret), 'b')
 plt.plot(np.cumsum(disagg_ts_instantaneous_regret), 'g')
-plt.axvline(disaggregation_time)
+#plt.axvline(disaggregation_time)
 plt.axvline(cumulative_samples[0])
 plt.axvline(cumulative_samples[1])
 plt.axvline(cumulative_samples[2])
 plt.legend(["Mixed Alghoritm", "Aggregate", "Disaggregate"])
-plt.axvline(disaggregation_time)
+#plt.axvline(disaggregation_time)
 plt.show()
 
 plt.figure(2)
@@ -286,11 +293,12 @@ plt.ylabel("Reward")
 plt.xlabel("t")
 plt.plot(np.mean(agg_ts_reward_per_experiment, axis=0), 'r')
 plt.plot(opt_per_round, '--k')
+print(opt_per_round[0])
 plt.legend(["Aggregate", "aggregate optimum"])
 #plt.plot(opt_per_round_cl0, '--k')
 #plt.plot(opt_per_round_cl1, '--k')
 #plt.plot(opt_per_round_cl2, '--k')
-plt.axvline(disaggregation_time)
+#plt.axvline(disaggregation_time)
 plt.show()
 
 
