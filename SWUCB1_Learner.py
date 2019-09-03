@@ -1,49 +1,81 @@
 from UCB1_Learner import *
 
-#TODO: l'algoritmo sembra disimparare (capire come mai)
+
 class SWUCB1_Learner(UCB1_Learner):
 
-    '''
-    Initialization of SWUCB1
-        - UCB1 parameters
-        - size of the sliding window
-    '''
     def __init__(self, n_arms, margins, window_size):
+        """
+        Initialization of SWUCB1
+        :param n_arms: number of arms
+        :param margins: margins vector
+        :param window_size: the size of the sliding window
+        :self.sample_timestamp = for each arm: array of timestamps when the arm was pulled
+        """
         super().__init__(n_arms, margins)
         self.window_size = window_size
         self.sample_timestamp = [[] for _ in range(n_arms)]
         # print(self.window_size)
 
-    '''
-    Update of the bound of the selected arm
-        - pulled_arm: the selected arm
-        - reward: the reward
-        - n_rounds_arm: the last window_size samples of the selected arm
-        - windowed_mean: the mean of the last window_size samples
-    '''
-    def update(self, pulled_arm, reward):
-        self.update_timestamp(pulled_arm)
+    def pull_arm(self):
+        """
+        Selection of the arm:
+        We select the index of the arm with the maximum bound
+        (in case of ties we choose randomly)
+        :return: the pulled arm
+        """
+        if self.t < self.n_arms:
+            return self.t
+
+        for i in range(self.n_arms):
+            if len(self.samples_per_arm[i]) == 0:
+                return i
+
+        margin_bounds = self.bounds * self.margins
+        idxs = np.argwhere(margin_bounds == margin_bounds.max()).reshape(-1)
+        pulled_arm = np.random.choice(idxs)
+        return pulled_arm
+
+    def update2(self, pulled_arm, reward):
+        """
+        Function that update the parameters of the pulled arm
+        :param pulled_arm: the selected arm
+        :param reward: the associated reward
+        """
         self.update_observations(pulled_arm, reward)
 
-        # print("time",self.sample_timestamp)
-        # print("arm:",self.samples_per_arm)
+        if self.t < self.n_arms:
+            self.bounds[pulled_arm] = 1
+        else:
+            self.bounds[pulled_arm] = np.mean(self.samples_per_arm[pulled_arm][-self.window_size:]) + \
+                                np.sqrt(2*np.log(self.t)/(len(self.samples_per_arm[pulled_arm][-self.window_size:])-1))
+        self.t += 1
 
-        n_rounds_arm = len(self.samples_per_arm[pulled_arm])
-        windowed_mean = np.mean(self.samples_per_arm[pulled_arm])
-        self.bounds[pulled_arm] = windowed_mean+np.sqrt(2*np.log(self.t)/n_rounds_arm)
+    def update(self, pulled_arm, reward):
+        """
+        Update of the bound of the selected arm
+        :param pulled_arm: the selected arm
+        :param reward: the reward
+        """
 
-    def update_timestamp(self, pulled_arm):
-        """
-        Update of the samples considering the sliding window.
-        For the selected arm, remove the "older" samples:
-        if the sample at the head of the array is older than the sliding window tail it is removed.
-        Repeat until all the "older" samples are remove from the array
-        :param pulled_arm: the selected arm/candidate
-        """
+        # 1. Move the window (discard old samples for all the arms)
         self.sample_timestamp[pulled_arm].append(self.t)
+        for i in range(self.n_arms):
+            if len(self.sample_timestamp[i]) > 0:
+                while self.sample_timestamp[i][0] < (self.t - self.window_size):
+                    self.sample_timestamp[i] = self.sample_timestamp[i][1:]
+                    self.samples_per_arm[i] = self.samples_per_arm[i][1:]
+                    if len(self.sample_timestamp[i]) == 0:
+                        break
 
-        while self.sample_timestamp[pulled_arm][0] < (self.t - self.window_size):
-            self.sample_timestamp[pulled_arm] = self.sample_timestamp[pulled_arm][1:]
-            self.samples_per_arm[pulled_arm] = self.samples_per_arm[pulled_arm][1:]
+        # 2. Update the confidence bounds of all the arms since the window has been moved
+        self.update_observations(pulled_arm, reward)
+
+        for i in range(self.n_arms):
+            if len(self.sample_timestamp[i]) == 0:
+                self.bounds[pulled_arm] = 0
+            else:
+                n_rounds_arm = len(self.samples_per_arm[i])
+                windowed_mean = np.mean(self.samples_per_arm[i])
+                self.bounds[i] = windowed_mean+np.sqrt(2*np.log(self.t+1)/n_rounds_arm)
 
         self.t += 1
