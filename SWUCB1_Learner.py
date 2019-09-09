@@ -26,16 +26,16 @@ class SWUCB1_Learner(UCB1_Learner):
         if self.t < self.n_arms:
             return self.t
 
-        for i in range(self.n_arms):
-            if len(self.samples_per_arm[i]) == 0:
-                return i
+        # for i in range(0, self.n_arms):
+        #     if len(self.samples_per_arm[i]) == 0:
+        #         return i
 
         margin_bounds = self.bounds * self.margins
         idxs = np.argwhere(margin_bounds == margin_bounds.max()).reshape(-1)
         pulled_arm = np.random.choice(idxs)
         return pulled_arm
 
-    def update2(self, pulled_arm, reward):
+    def update(self, pulled_arm, reward):
         """
         Function that update the parameters of the pulled arm
         :param pulled_arm: the selected arm
@@ -44,13 +44,14 @@ class SWUCB1_Learner(UCB1_Learner):
         self.update_observations(pulled_arm, reward)
 
         if self.t < self.n_arms:
-            self.bounds[pulled_arm] = 1
+            self.bounds[pulled_arm] = 0
         else:
-            self.bounds[pulled_arm] = np.mean(self.samples_per_arm[pulled_arm][-self.window_size:]) + \
-                                np.sqrt(2*np.log(self.t)/(len(self.samples_per_arm[pulled_arm][-self.window_size:])-1))
+            n_rounds_arm = len(self.samples_per_arm[pulled_arm])
+            windowed_mean = np.mean(self.samples_per_arm[pulled_arm])
+            self.bounds[pulled_arm] = windowed_mean + np.sqrt(2 * np.log(self.t + 1) / n_rounds_arm)
         self.t += 1
 
-    def update(self, pulled_arm, reward):
+    def update2(self, pulled_arm, reward):
         """
         Update of the bound of the selected arm
         :param pulled_arm: the selected arm
@@ -59,7 +60,7 @@ class SWUCB1_Learner(UCB1_Learner):
 
         # 1. Move the window (discard old samples for all the arms)
         self.sample_timestamp[pulled_arm].append(self.t)
-        for i in range(self.n_arms):
+        for i in range(0, self.n_arms):
             if len(self.sample_timestamp[i]) > 0:
                 while self.sample_timestamp[i][0] < (self.t - self.window_size):
                     self.sample_timestamp[i] = self.sample_timestamp[i][1:]
@@ -70,7 +71,7 @@ class SWUCB1_Learner(UCB1_Learner):
         # 2. Update the confidence bounds of all the arms since the window has been moved
         self.update_observations(pulled_arm, reward)
 
-        for i in range(self.n_arms):
+        for i in range(0, self.n_arms):
             if len(self.sample_timestamp[i]) == 0:
                 self.bounds[pulled_arm] = 0
             else:
