@@ -3,7 +3,6 @@
 import Data
 from NonStationaryEnvironment import *
 from SWTS_Learner import *
-from sys import stdout
 import matplotlib.pyplot as plt
 
 n_arms = Data.n_candidates
@@ -23,8 +22,10 @@ aggregate = True
 disaggregation_times = [Data.t_horizon]
 
 #all the dissaggregation time of the experiments
-disaggregation_times = []
 margins = Data.margins
+
+#array that saves the pulled class each time
+#pulled_classes_round = []
 
 t_horizon = int(Data.t_horizon)
 window_size = int(np.sqrt(t_horizon))
@@ -37,6 +38,68 @@ reward_per_experiment = []
 cl0_reward_per_experiment = []
 cl1_reward_per_experiment = []
 cl2_reward_per_experiment = []
+
+regrets_per_experiment = []
+
+
+n_phases = len(p_agg)
+phases_length = Data.samples_per_phase
+
+agg_rewards_per_phase = []
+cl0_rewards_per_phase = []
+cl1_rewards_per_phase = []
+cl2_rewards_per_phase = []
+disag_rewards_per_phase = [cl0_rewards_per_phase, cl1_rewards_per_phase, cl2_rewards_per_phase]
+
+#for each phase we calculate the true rewards of each cadidate
+for p in range(n_phases):
+    agg_rewards_per_phase.append(p_agg[p] * margins)
+    cl0_rewards_per_phase.append(p_class0[p] * margins)
+    cl1_rewards_per_phase.append(p_class1[p] * margins)
+    cl2_rewards_per_phase.append(p_class2[p] * margins)
+#print(cl0_rewards_per_phase)
+
+#for each phase we calculate the optimum reward (wrt aggregate curve)
+agg_opt_per_phases = np.array(agg_rewards_per_phase).max(axis=1)
+'''
+opt_candidate_per_phase = np.argmax(np.array(cl0_rewards_per_phase), axis=1)
+opt_per_phases_cl0 = np.array(cl0_rewards_per_phase).max(axis=1) / [p_class0[x, val] for x, val in enumerate(opt_candidate_per_phase)]
+
+opt_candidate_per_phase = np.argmax(np.array(cl1_rewards_per_phase), axis=1)
+opt_per_phases_cl1 = np.array(cl1_rewards_per_phase).max(axis=1) / [p_class1[x, val] for x, val in enumerate(opt_candidate_per_phase)]
+
+opt_candidate_per_phase = np.argmax(np.array(cl2_rewards_per_phase), axis=1)
+opt_per_phases_cl2 = np.array(cl2_rewards_per_phase).max(axis=1) / [p_class2[x, val] for x, val in enumerate(opt_candidate_per_phase)]
+'''
+
+opt_per_phases_cl0 = np.array(cl0_rewards_per_phase).max(axis=1)
+opt_per_phases_cl1 = np.array(cl1_rewards_per_phase).max(axis=1)
+opt_per_phases_cl2 = np.array(cl2_rewards_per_phase).max(axis=1)
+
+disag_opt_per_phase = [opt_per_phases_cl0, opt_per_phases_cl1, opt_per_phases_cl2]
+
+agg_opt_per_round = np.zeros(t_horizon)
+opt_per_round_cl0 = np.zeros(t_horizon)
+opt_per_round_cl1 = np.zeros(t_horizon)
+opt_per_round_cl2 = np.zeros(t_horizon)
+
+#this array tell us at which samples a phase begins and when it stops
+cumulative_samples = np.cumsum(phases_length)
+
+for i in range(n_phases):
+    #print("Phase: " + i.__str__())
+    if i == 0:
+        agg_opt_per_round[0 : cumulative_samples[i]] = agg_opt_per_phases[i]
+        opt_per_round_cl0[0 : cumulative_samples[i]] = opt_per_phases_cl0[i]
+        opt_per_round_cl1[0 : cumulative_samples[i]] = opt_per_phases_cl1[i]
+        opt_per_round_cl2[0 : cumulative_samples[i]] = opt_per_phases_cl2[i]
+    else:
+        agg_opt_per_round[cumulative_samples[i-1] : cumulative_samples[i]] = agg_opt_per_phases[i]
+        opt_per_round_cl0[cumulative_samples[i-1] : cumulative_samples[i]] = opt_per_phases_cl0[i]
+        opt_per_round_cl1[cumulative_samples[i-1] : cumulative_samples[i]] = opt_per_phases_cl1[i]
+        opt_per_round_cl2[cumulative_samples[i-1] : cumulative_samples[i]] = opt_per_phases_cl2[i]
+
+disag_opt_per_round = [opt_per_round_cl0, opt_per_round_cl1, opt_per_round_cl2]
 
 def check_aggregation(aggregations, time):
 
@@ -55,14 +118,18 @@ def check_aggregation(aggregations, time):
 
         agg_rew = np.append(agg_rew, (sum_/checking_samples))
         idx = np.argmax(agg_rew)
-
+    #print("\n")
+    #print(agg_rew)
+    #print(idx)
     return idx, idx != len(aggregations) - 1, t
 
 
 
 for e in range(n_experiments):
-    stdout.write("\rexperiment number: %d" %e)
-    stdout.flush()
+    #stdout.write("\rexperiment number: %d" %e)
+    #stdout.flush()
+    print("\nrun experiment number: {}".format(e))
+    print(" ")
 
     force_after = 600
     aggregate = True
@@ -101,15 +168,16 @@ for e in range(n_experiments):
 
     collected_rewards = []
 
+    regrets = np.zeros(t_horizon)
+
     for t in range(0, t_horizon):
 
         #if it's the firts day of the week, the alghoritm check if is better the aggregate cure or the disaggregate ones
-        if ((t % Data.samples_per_week) == 0) and False: #and force_after == 0:
+        if ((t % Data.samples_per_week) == 0) and aggregate: #and force_after == 0:
             best_agg_idx, aggregate, disaggregation_time = check_aggregation(aggregations, t)
 
             if best_agg_idx != 0 and len(aggregations) == 5:
-
-                force_after = 600
+                #print(best_agg_idx)
                 active_learners = aggregations[best_agg_idx]
 
                 if best_agg_idx == 1:
@@ -132,7 +200,7 @@ for e in range(n_experiments):
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[0])
-                    print("\tperforming disaggregation 2", end='')
+                    print("\tperforming disaggregation 2\n", end='')
             elif best_agg_idx != 0:
                 aggregations.remove(aggregations[0])
                 print("\tperforming disaggregation 3")
@@ -149,9 +217,6 @@ for e in range(n_experiments):
                 pulled_arm = learner.pull_arm()
                 break
 
-        if pulled_arm == None:
-            raise RuntimeError("No pulled arm")
-
         reward = environments[pulled_class].round(pulled_arm)
 
         for enviroment in environments:
@@ -165,29 +230,46 @@ for e in range(n_experiments):
             if pulled_class in learner.classes:
                 learner.update(pulled_arm, reward)
 
+        #calculate the regret
+        regret = disag_opt_per_round[pulled_class][t] - (reward * margins[pulled_arm])
+        regrets[t] = regret
+        '''
+        print("\noptimum: {}".format(disag_opt_per_round[pulled_class][t]))
+        print("reward: {}".format(reward))
+        print("regret: {}".format(regret))
+        print("pulled class: {}".format(pulled_class))
+        print("pulled arm: {}".format(pulled_arm))
+        '''
 
-    # update the reward per experiments
+
+    # update the reward per experiment
     reward_per_experiment.append(collected_rewards)
-    print("\n")
+    # update the regret per experiment
+    regrets_per_experiment.append(regrets)
+    #print("\n")
 
-instantaneous_regret = np.zeros(t_horizon)
+regrets_per_experiment = np.array(regrets_per_experiment)
+print(regrets_per_experiment.shape)
 
-n_phases = len(p_agg)
-phases_length = Data.samples_per_phase
-rewards_per_phases = []
-'''
-for p in range(n_phases):
-    rewards_per_phases.append(p_agg[p] * margins)
-    cl0_rewards_per_phases.append(p_class0[p] * margins)
-    cl1_rewards_per_phases.append(p_class1[p] * margins)
-    cl2_rewards_per_phases.append(p_class2[p] * margins)
-    '''
 
 plt.figure(2)
 plt.ylabel("Reward")
 plt.xlabel("t")
 plt.plot(np.mean(reward_per_experiment, axis=0), 'r')
-plt.plot([131.13]*len(reward_per_experiment[0]), '--k')
+plt.plot(opt_per_round_cl0)
+plt.plot(opt_per_round_cl1)
+plt.plot(opt_per_round_cl2)
+plt.plot(agg_opt_per_round)
+plt.legend(["Reward", "cl0", "cl1", "cl2", "Aggregate optimum"])
 plt.show()
 
+plt.figure(1)
+plt.ylabel("Regret")
+plt.xlabel("Time")
+plt.plot(np.cumsum(np.mean(regrets_per_experiment, axis=0)))
+plt.axvline(cumulative_samples[0])
+plt.axvline(cumulative_samples[1])
+plt.axvline(cumulative_samples[2])
+plt.legend(["Regret"])
+plt.show()
 

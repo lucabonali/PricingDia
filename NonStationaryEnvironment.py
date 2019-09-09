@@ -39,14 +39,6 @@ class NonStationaryEnvironment(Environment):
 
     def round(self, pulled_arm):
 
-        if self.t == self.phase_sizes[0]:
-            print("\nend first phase " + str(self.t))
-
-        '''
-        if self.t == self.phase_sizes[1] + self.phase_sizes[0]:
-            print("\nend second phase " + str(self.t))
-        '''
-
         """
         Get the reward of the selected arm considering the current phase
         :param pulled_arm: the learner selected arm

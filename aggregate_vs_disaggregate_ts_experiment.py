@@ -301,4 +301,11 @@ plt.legend(["Aggregate", "aggregate optimum"])
 #plt.axvline(disaggregation_time)
 plt.show()
 
+plt.figure(4)
+plt.plot(opt_per_round_cl0)
+plt.plot(opt_per_round_cl1)
+plt.plot(opt_per_round_cl2)
+plt.plot(opt_per_round)
+plt.legend(["cl0", "cl1", "cl2", "agg"])
+plt.show()
 
