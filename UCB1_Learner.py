@@ -36,9 +36,16 @@ class UCB1_Learner(Learner):
         """
         self.update_observations(pulled_arm, reward)
 
-        if self.t < self.n_arms:
-            self.bounds[pulled_arm] = 10000
-        else:
-            self.bounds[pulled_arm] = np.mean(self.samples_per_arm[pulled_arm])+ \
-                                      np.sqrt(2*np.log(self.t)/(len(self.samples_per_arm[pulled_arm])-1))
+        # if self.t < self.n_arms:
+        #     self.bounds[pulled_arm] = 0
+        # else:
+        #     n_rounds_arm = len(self.samples_per_arm[pulled_arm])
+        #     windowed_mean = np.mean(self.samples_per_arm[pulled_arm])
+        #     self.bounds[pulled_arm] = windowed_mean + np.sqrt(2 * np.log(self.t + 1) / n_rounds_arm)
+
+        mean = np.mean(self.samples_per_arm[pulled_arm])
+        n_rounds_arm = len(self.samples_per_arm[pulled_arm])
+
+        self.bounds[pulled_arm] = mean + np.sqrt(2 * np.log(self.t+1) / n_rounds_arm)
+
         self.t += 1
