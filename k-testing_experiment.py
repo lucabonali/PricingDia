@@ -9,6 +9,9 @@ NB: K-Testing is done considering only one phase
 
 import Data
 from KTesting import *
+from sys import stdout
+from statistics import variance
+import numpy as np
 
 # Tester parameters
 alpha = 0.005
@@ -16,11 +19,23 @@ beta = 0.85
 delta = 0.05
 
 candidates = Data.k_testing_candidates
+n_experiment = 10
+
+best_per_exp = []
 
 # Computation of the best candidate for each phase
 best_candidates = []
-for p in range(len(Data.total_curve_values[0])):
-    tester = KTesting(alpha, beta, delta, candidates[p])
-    best_candidates.append(tester.sequential_testing())
+tester = KTesting(alpha, beta, delta, candidates[0])
 
-print(best_candidates)
+for e in range(n_experiment):
+    stdout.write("\rexperiment number: %d" %e)
+    stdout.flush()
+    #print("experiment number: {}".format(e))
+    best_candidates.append(tester.sequential_testing())
+    best_per_exp.append(tester.sequential_testing())
+
+print(best_per_exp)
+
+print("\nminimum: {}".format(np.min(np.array(best_per_exp))))
+print("maximum: {}".format(np.max(np.array(best_per_exp))))
+print("mean: {}".format(np.mean(np.array(best_per_exp))))

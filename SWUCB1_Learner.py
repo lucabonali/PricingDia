@@ -39,7 +39,14 @@ class SWUCB1_Learner(UCB1_Learner):
 
     def update(self, pulled_arm, reward):
         """
-        Function that update the parameters of the pulled arm
+        Function that update the parameters of the pulled arm self.sample_timestamp[pulled_arm].append(self.t)
+        for i in range(0, self.n_arms):
+            if len(self.sample_timestamp[i]) > 0:
+                while self.sample_timestamp[i][0] < (self.t - self.window_size):
+                    self.sample_timestamp[i] = self.sample_timestamp[i][1:]
+                    self.samples_per_arm[i] = self.samples_per_arm[i][1:]
+                    if len(self.sample_timestamp[i]) == 0:
+                        break
         :param pulled_arm: the selected arm
         :param reward: the associated reward
         """
@@ -67,14 +74,7 @@ class SWUCB1_Learner(UCB1_Learner):
         """
 
         # 1. Move the window (discard old samples for all the arms)
-        self.sample_timestamp[pulled_arm].append(self.t)
-        for i in range(0, self.n_arms):
-            if len(self.sample_timestamp[i]) > 0:
-                while self.sample_timestamp[i][0] < (self.t - self.window_size):
-                    self.sample_timestamp[i] = self.sample_timestamp[i][1:]
-                    self.samples_per_arm[i] = self.samples_per_arm[i][1:]
-                    if len(self.sample_timestamp[i]) == 0:
-                        break
+
 
         # 2. Update the confidence bounds of all the arms since the window has been moved
         self.update_observations(pulled_arm, reward)

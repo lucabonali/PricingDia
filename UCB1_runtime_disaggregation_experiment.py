@@ -2,7 +2,7 @@
 
 import Data
 from NonStationaryEnvironment import *
-from SWTS_Learner import *
+from UCB1_Learner import *
 import matplotlib.pyplot as plt
 
 n_arms = Data.n_candidates
@@ -131,17 +131,16 @@ for e in range(n_experiments):
     print("\nrun experiment number: {}".format(e))
     print(" ")
 
-    force_after = 600
     aggregate = True
 
     # creation of the learners
-    agg_ts_learner = TS_Learner(n_arms=n_arms, margins=margins, classes = [0, 1, 2])
-    cl0_ts_learner = TS_Learner(n_arms=n_arms, margins=margins, classes = [0])
-    cl1_ts_learner = TS_Learner(n_arms=n_arms, margins=margins, classes = [1])
-    cl2_ts_learner = TS_Learner(n_arms=n_arms, margins=margins, classes = [2])
-    cl01_ts_learner = TS_Learner(n_arms=n_arms, margins=margins, classes = [0, 1])
-    cl02_ts_learner = TS_Learner(n_arms=n_arms, margins=margins, classes = [0, 2])
-    cl12_ts_learner = TS_Learner(n_arms=n_arms, margins=margins, classes = [1, 2])
+    agg_ts_learner = UCB1_Learner(n_arms=n_arms, margins=margins, classes = [0, 1, 2])
+    cl0_ts_learner = UCB1_Learner(n_arms=n_arms, margins=margins, classes = [0])
+    cl1_ts_learner = UCB1_Learner(n_arms=n_arms, margins=margins, classes = [1])
+    cl2_ts_learner = UCB1_Learner(n_arms=n_arms, margins=margins, classes = [2])
+    cl01_ts_learner = UCB1_Learner(n_arms=n_arms, margins=margins, classes = [0, 1])
+    cl02_ts_learner = UCB1_Learner(n_arms=n_arms, margins=margins, classes = [0, 2])
+    cl12_ts_learner = UCB1_Learner(n_arms=n_arms, margins=margins, classes = [1, 2])
 
     #the learners "active" at a certain time, at the beginnig the aggregate learner is actived
     active_learners = [agg_ts_learner]
@@ -179,9 +178,10 @@ for e in range(n_experiments):
             if best_agg_idx != 0 and len(aggregations) == 5:
                 #print(best_agg_idx)
                 active_learners = aggregations[best_agg_idx]
+                print("\n\tActive learners {}".format(active_learners), end='')
 
                 if best_agg_idx == 1:
-                    print("\tperforming disaggregation 1", end='')
+                    print("\n\tperforming disaggregation 1", end='')
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[1])
                     aggregations.remove(aggregations[1])
@@ -189,25 +189,23 @@ for e in range(n_experiments):
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[1])
-                    print("\tperforming disaggregation 1", end='')
+                    print("\n\tperforming disaggregation 1", end='')
                 elif best_agg_idx == 3:
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[0])
-                    print("\tperforming disaggregation 1", end='')
+                    print("\n\tperforming disaggregation 1", end='')
                 elif best_agg_idx == 4:
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[0])
                     aggregations.remove(aggregations[0])
-                    print("\tperforming disaggregation 2\n", end='')
+                    print("\n\tperforming disaggregation 2\n", end='')
             elif best_agg_idx != 0:
+                active_learners = aggregations[best_agg_idx]
                 aggregations.remove(aggregations[0])
-                print("\tperforming disaggregation 3")
-
-
-        if force_after > 0:
-            force_after -=1
+                print("\n\tActive learners {}".format(active_learners), end='')
+                print("\n\tperforming disaggregation 3")
 
         pulled_class = np.random.choice(np.arange(len(class_probabilities)), 1, p=class_probabilities)[0]
 
@@ -256,11 +254,11 @@ plt.figure(2)
 plt.ylabel("Reward")
 plt.xlabel("t")
 plt.plot(np.mean(reward_per_experiment, axis=0), 'r')
-plt.plot(opt_per_round_cl0)
-plt.plot(opt_per_round_cl1)
-plt.plot(opt_per_round_cl2)
+#plt.plot(opt_per_round_cl0)
+#plt.plot(opt_per_round_cl1)
+#plt.plot(opt_per_round_cl2)
 plt.plot(agg_opt_per_round)
-plt.legend(["Reward", "cl0", "cl1", "cl2", "Aggregate optimum"])
+plt.legend(["Reward", "Aggregate optimum"])
 plt.show()
 
 plt.figure(1)

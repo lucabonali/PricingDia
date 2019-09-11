@@ -4,7 +4,7 @@ import numpy as np
 
 class UCB1_Learner(Learner):
 
-    def __init__(self, n_arms, margins):
+    def __init__(self, n_arms, margins, classes = []):
         """
         Initialization of the UCB1:
         :param n_arms: number of arms
@@ -13,6 +13,7 @@ class UCB1_Learner(Learner):
         """
         super().__init__(n_arms, margins)
         self.bounds = np.zeros(n_arms)
+        self.classes = classes
 
     def pull_arm(self):
         """
@@ -27,6 +28,14 @@ class UCB1_Learner(Learner):
         idxs = np.argwhere(margin_bounds == margin_bounds.max()).reshape(-1)
         pulled_arm = np.random.choice(idxs)
         return pulled_arm
+
+    #return the best expected reward and the arm
+    def get_best(self):
+        margin_bounds = self.bounds * self.margins
+        idxs = np.argwhere(margin_bounds == margin_bounds.max()).reshape(-1)
+        idx = np.random.choice(idxs)
+        best_reward = margin_bounds.max()
+        return idx, best_reward
 
     def update(self, pulled_arm, reward):
         """

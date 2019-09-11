@@ -14,7 +14,7 @@ class TS_Learner(Learner):
         Initialization of the TS Learner
         :param n_arms: number of candidates
         :param margins: margins associated to each candidate
-        :param classes: the classes that is learned
+        :param classes: the classes that are learned
         :self beta_parameters = beta distribution parameters initialization for all the candidates
         """
         super().__init__(n_arms, margins)

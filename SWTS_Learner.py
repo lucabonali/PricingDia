@@ -7,14 +7,14 @@ from TS_Learner import *
 
 class SWTS_Learner(TS_Learner):
 
-    def __init__(self, n_arms, margins, window_size):
+    def __init__(self, n_arms, margins, window_size, classes = []):
         """
         Initalization of the SWTS Learner
         :param n_arms: number of candidates
         :param margins: margins associated to each candidate
         :param window_size: size of the sliding window
         """
-        super().__init__(n_arms, margins)
+        super().__init__(n_arms, margins, classes)
         self.window_size = window_size
 
     '''

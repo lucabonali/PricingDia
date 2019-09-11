@@ -13,9 +13,9 @@ class KTesting():
     def __init__(self, alpha, beta, delta, candidates):
         """
         Initialization of the tester for K-testing
-        :param alpha: significance level
-        :param beta: power level
-        :param delta: alternative hypothesis relaxing coefficient
+        :param alpha: significance level, the probability of rejecting the null hypothesis when it is true typically 0.05
+        :param beta: power level, probability of rejecting the null hypothesis when the null hypothesis is false, typically 0.8
+        :param delta: alternative hypothesis relaxing coefficient, it is related to the accuracy. If is small, the accuracy is high
         :param candidates: list of candidates of the form (price, probability, margin)
         """
         self.alpha = alpha
@@ -90,6 +90,7 @@ class KTesting():
 
         pooled_mean = (a_samples * emp_mean_a + b_samples * emp_mean_b) / num_of_samples
 
+        #
         z = (emp_mean_a * a_margin - emp_mean_b * b_margin) / np.sqrt(
             pooled_mean * (1 - pooled_mean) * (1 / a_samples + 1 / b_samples))
 
