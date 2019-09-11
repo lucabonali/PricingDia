@@ -28,16 +28,16 @@ class SWUCB1_Learner(UCB1_Learner):
         if self.t < self.n_arms:
             return self.t
 
-        # for i in range(0, self.n_arms):
-        #     if len(self.samples_per_arm[i]) == 0:
-        #         return i
+        for i in range(0, self.n_arms):
+            if len(self.samples_per_arm[i]) == 0:
+                return i
 
         margin_bounds = self.bounds * self.margins
         idxs = np.argwhere(margin_bounds == margin_bounds.max()).reshape(-1)
         pulled_arm = np.random.choice(idxs)
         return pulled_arm
 
-    def update(self, pulled_arm, reward):
+    def update2(self, pulled_arm, reward):
         """
         Function that update the parameters of the pulled arm
         :param pulled_arm: the selected arm
@@ -59,12 +59,15 @@ class SWUCB1_Learner(UCB1_Learner):
 
         self.t += 1
 
-    def update2(self, pulled_arm, reward):
+    def update(self, pulled_arm, reward):
         """
         Update of the bound of the selected arm
         :param pulled_arm: the selected arm
         :param reward: the reward
         """
+
+        if self.t > self.window_size:
+            print("ok")
 
         # 1. Move the window (discard old samples for all the arms)
         self.sample_timestamp[pulled_arm].append(self.t)
@@ -73,6 +76,8 @@ class SWUCB1_Learner(UCB1_Learner):
                 while self.sample_timestamp[i][0] < (self.t - self.window_size):
                     self.sample_timestamp[i] = self.sample_timestamp[i][1:]
                     self.samples_per_arm[i] = self.samples_per_arm[i][1:]
+                    print(i, self.sample_timestamp[i])
+                    print(i, self.samples_per_arm[i])
                     if len(self.sample_timestamp[i]) == 0:
                         break
 
@@ -81,7 +86,7 @@ class SWUCB1_Learner(UCB1_Learner):
 
         for i in range(0, self.n_arms):
             if len(self.sample_timestamp[i]) == 0:
-                self.bounds[pulled_arm] = 0
+                self.bounds[i] = 1000
             else:
                 n_rounds_arm = len(self.samples_per_arm[i])
                 windowed_mean = np.mean(self.samples_per_arm[i])
