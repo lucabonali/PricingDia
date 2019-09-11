@@ -31,5 +31,6 @@ class SWTS_Learner(TS_Learner):
 
         cum_rew = np.sum(self.samples_per_arm[pulled_arm][-self.window_size:])
         n_rounds_arm = len(self.samples_per_arm[pulled_arm][-self.window_size:])
+
         self.beta_parameters[pulled_arm, 0] = cum_rew + 1.0
         self.beta_parameters[pulled_arm, 1] = n_rounds_arm - cum_rew + 1.0

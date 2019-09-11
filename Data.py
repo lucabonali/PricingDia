@@ -15,11 +15,11 @@ Phases and time horizon:
     - Holiday: [Gic, Gen]
     - New model: [Feb, Mar, Apr]
 '''
-months_per_phases = [3, 10, 2, 3]
+months_per_phases = [3, 2, 3, 3]
 #months_per_phases = [5, 0, 0, 0]
 day_per_months = 30
 
-samples_per_day = 20
+samples_per_day = 25
 samples_per_week = samples_per_day * 7
 samples_per_month = samples_per_week * 4
 

@@ -25,12 +25,12 @@ class SWUCB1_Learner(UCB1_Learner):
         (in case of ties we choose randomly)
         :return: the pulled arm
         """
-        if self.t < self.n_arms:
-            return self.t
+        # if self.t < self.n_arms:
+        #     return self.t
 
-        for i in range(0, self.n_arms):
-            if len(self.samples_per_arm[i]) == 0:
-                return i
+        # for i in range(0, self.n_arms):
+        #     if len(self.samples_per_arm[i]) == 0:
+        #         return i
 
         margin_bounds = self.bounds * self.margins
         idxs = np.argwhere(margin_bounds == margin_bounds.max()).reshape(-1)
@@ -66,8 +66,8 @@ class SWUCB1_Learner(UCB1_Learner):
         :param reward: the reward
         """
 
-        if self.t > self.window_size:
-            print("ok")
+        # if self.t > self.window_size:
+        #     print("ok")
 
         # 1. Move the window (discard old samples for all the arms)
         self.sample_timestamp[pulled_arm].append(self.t)
@@ -76,8 +76,8 @@ class SWUCB1_Learner(UCB1_Learner):
                 while self.sample_timestamp[i][0] < (self.t - self.window_size):
                     self.sample_timestamp[i] = self.sample_timestamp[i][1:]
                     self.samples_per_arm[i] = self.samples_per_arm[i][1:]
-                    print(i, self.sample_timestamp[i])
-                    print(i, self.samples_per_arm[i])
+                    # print(i, self.sample_timestamp[i])
+                    # print(i, self.samples_per_arm[i])
                     if len(self.sample_timestamp[i]) == 0:
                         break
 

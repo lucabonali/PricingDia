@@ -12,7 +12,7 @@ class UCB1_Learner(Learner):
         :self.bounds = bound of each arm
         """
         super().__init__(n_arms, margins)
-        self.bounds = np.zeros(n_arms)
+        self.bounds = np.ones(n_arms) * 100
         self.classes = classes
 
     def pull_arm(self):
@@ -22,8 +22,8 @@ class UCB1_Learner(Learner):
         (in case of ties we choose randomly)
         :return: the pulled arm
         """
-        if self.t < self.n_arms:
-            return self.t
+        # if self.t < self.n_arms:
+        #     return self.t
         margin_bounds = self.bounds * self.margins
         idxs = np.argwhere(margin_bounds == margin_bounds.max()).reshape(-1)
         pulled_arm = np.random.choice(idxs)
@@ -44,13 +44,6 @@ class UCB1_Learner(Learner):
         :param reward: the associated reward
         """
         self.update_observations(pulled_arm, reward)
-
-        # if self.t < self.n_arms:
-        #     self.bounds[pulled_arm] = 0
-        # else:
-        #     n_rounds_arm = len(self.samples_per_arm[pulled_arm])
-        #     windowed_mean = np.mean(self.samples_per_arm[pulled_arm])
-        #     self.bounds[pulled_arm] = windowed_mean + np.sqrt(2 * np.log(self.t + 1) / n_rounds_arm)
 
         mean = np.mean(self.samples_per_arm[pulled_arm])
         n_rounds_arm = len(self.samples_per_arm[pulled_arm])
