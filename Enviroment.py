@@ -2,7 +2,7 @@
 SuperClass of NonStationaryEnvironment.
 It interacts with the learner by returning a stochastic reward
 """
-
+import Data
 import numpy as np
 
 
@@ -16,6 +16,8 @@ class Environment:
         """
         self.n_arms = n_arms
         self.probabilities = probabilities
+        self.smooth_factor = Data.smooth_factor
+
 
     def round(self, pulled_arm):
         """
@@ -24,4 +26,5 @@ class Environment:
         :return: conversion rate reward (taken from a Bernoulli distribution)
         """
         reward = np.random.binomial(1, self.probabilities[pulled_arm])
+
         return reward
