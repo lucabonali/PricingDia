@@ -12,7 +12,7 @@ class UCB1_Learner(Learner):
         :self.bounds = bound of each arm
         """
         super().__init__(n_arms, margins)
-        self.bounds = np.ones(n_arms) * 100
+        self.bounds = np.ones(n_arms) * 1000
         self.classes = classes
 
     def pull_arm(self):

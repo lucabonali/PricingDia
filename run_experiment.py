@@ -22,12 +22,12 @@ for K in K_vals:
     thompson_window_size = int(np.sqrt(t_horizon))
     ucb1_window_size = int(np.sqrt(t_horizon)*K)
 
-    n_experiments = 1000
+    n_experiments = 10000
 
-    run_ts = False
+    run_ts = True
     run_swts = False
     run_ucb1 = True
-    run_swucb1 = True
+    run_swucb1 = False
 
     ts_reward_per_experiment = []
     ucb1_reward_per_experiment = []
