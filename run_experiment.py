@@ -5,16 +5,16 @@ from SWUCB1_Learner import *
 import matplotlib.pyplot as plt
 
 
-n_arms = Data.n_candidates - 10
+n_arms = Data.n_candidates - 4
 
-p_class1 = [x[10:] for x in Data.get_class_probabilities(0)]
-p_class2 = [x[10:] for x in Data.get_class_probabilities(1)]
-p_class3 = [x[10:] for x in Data.get_class_probabilities(2)]
-p_agg = [x[10:] for x in Data.get_class_probabilities(3)]
+p_class1 = [x[4:] for x in Data.get_class_probabilities(0)]
+p_class2 = [x[4:] for x in Data.get_class_probabilities(1)]
+p_class3 = [x[4:] for x in Data.get_class_probabilities(2)]
+p_agg = [x[4:] for x in Data.get_class_probabilities(3)]
 
-margins = Data.margins[10:]
+margins = Data.margins[4:]
 
-K_vals = [100]
+K_vals = [1]
 
 for K in K_vals:
     print("K: {}".format(K))
@@ -22,11 +22,11 @@ for K in K_vals:
     thompson_window_size = int(np.sqrt(t_horizon))
     ucb1_window_size = int(np.sqrt(t_horizon)*K)
 
-    n_experiments = 1000
+    n_experiments = 10000
 
-    run_ts = False
-    run_swts = False
-    run_ucb1 = True
+    run_ts = True
+    run_swts = True
+    run_ucb1 = False
     run_swucb1 = False
 
     ts_reward_per_experiment = []
