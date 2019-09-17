@@ -10,7 +10,6 @@ NB: K-Testing is done considering only one phase
 import Data
 from KTesting import *
 from sys import stdout
-from statistics import variance
 import numpy as np
 
 # Tester parameters
@@ -19,7 +18,7 @@ beta = 0.85
 delta = 0.05
 
 candidates = Data.k_testing_candidates
-n_experiment = 10
+n_experiment = 100
 
 best_per_exp = []
 
