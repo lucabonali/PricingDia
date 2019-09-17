@@ -14,17 +14,20 @@ p_agg = [x[4:] for x in Data.get_class_probabilities(3)]
 
 margins = Data.margins[4:]
 
-K_vals = [1]
+K_vals = [0.5, 1, 2, 5]
 
 for K in K_vals:
     print("K: {}".format(K))
     t_horizon = Data.t_horizon
-    thompson_window_size = int(np.sqrt(t_horizon))
+    thompson_window_size = int(np.sqrt(t_horizon)*K)
     ucb1_window_size = int(np.sqrt(t_horizon)*K)
 
     n_experiments = 10000
 
-    run_ts = True
+    reward_per_k = np.array(len(K_vals))
+    regret_per_k = np.array(len(K_vals))
+
+    run_ts = False
     run_swts = True
     run_ucb1 = False
     run_swucb1 = False
@@ -299,4 +302,29 @@ for K in K_vals:
         plt.plot(np.cumsum(swts_instantaneous_regret), 'b')
         plt.legend(["TS", "SWTS = {}".format(thompson_window_size)])
         plt.show()
+
+    reward_per_k = np.append(reward_per_k, np.mean(swts_reward_per_experiment))
+    regret_per_k = np.append(regret_per_k, np.cumsum(swts_instantaneous_regret))
+
+plt.figure(16)
+plt.title("Reward SWTS")
+plt.xlabel("t")
+plt.ylabel("Reward")
+plt.plot(reward_per_k[0])
+plt.plot(reward_per_k[1])
+plt.plot(reward_per_k[2])
+plt.plot(reward_per_k[3])
+plt.legend(["SWTS 0.5", "SWTS 1", "SWTS 2", "SWTS 5"])
+plt.show()
+
+plt.figure(17)
+plt.title("Regret SWTS")
+plt.xlabel("t")
+plt.ylabel("Regret")
+plt.plot(regret_per_k[0])
+plt.plot(regret_per_k[1])
+plt.plot(regret_per_k[2])
+plt.plot(regret_per_k[3])
+plt.legend(["SWTS 0.5", "SWTS 1", "SWTS 2", "SWTS 5"])
+plt.show()
 
