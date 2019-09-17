@@ -23,14 +23,14 @@ swucb1_reward_per_k = []
 swucb1_regret_per_k = []
 
 run_ts = False
-run_swts = False
+run_swts = True
 run_ucb1 = False
-run_swucb1 = True
+run_swucb1 = False
 
 t_horizon = Data.t_horizon
 
 for K in K_vals:
-    print("K: {}".format(K))
+    print("\nK: {}".format(K))
     thompson_window_size = int(np.sqrt(t_horizon)*K)
     ucb1_window_size = int(np.sqrt(t_horizon)*K)
 
