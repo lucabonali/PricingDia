@@ -16,8 +16,8 @@ margins = Data.margins[4:]
 
 K_vals = [0.1, 0.2, 0.5, 1, 5, 10, 20, 60, 1000]
 
-swts_reward_per_k = np.array(len(K_vals))
-swts_regret_per_k = np.array(len(K_vals))
+swts_reward_per_k = []
+swts_regret_per_k = []
 
 swucb1_reward_per_k = []
 swucb1_regret_per_k = []
@@ -304,8 +304,8 @@ for K in K_vals:
         plt.show()
 
     if run_swts:
-        # swts_reward_per_k = np.append(swts_reward_per_k, np.mean(swts_reward_per_experiment))
-        swts_regret_per_k = np.append(swts_regret_per_k, np.cumsum(swts_instantaneous_regret))
+        # swts_reward_per_k.append(np.mean(swts_reward_per_experiment))
+        swts_regret_per_k.append(np.cumsum(swts_instantaneous_regret))
 
     if run_swucb1:
         # swucb1_reward_per_k.append(np.mean(swucb1_reward_per_experiment))
