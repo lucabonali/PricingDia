@@ -14,27 +14,25 @@ p_agg = [x[4:] for x in Data.get_class_probabilities(3)]
 
 margins = Data.margins[4:]
 
-K_vals = [0.1, 0.2, 0.5, 1, 5, 10, 20, 60, 1000]
+K_vals = [0.1, 0.2, 0.5, 1, 10, 20, 50, 1000]
 
-swts_reward_per_k = []
 swts_regret_per_k = []
-
-swucb1_reward_per_k = []
 swucb1_regret_per_k = []
 
 run_ts = False
 run_swts = True
 run_ucb1 = False
-run_swucb1 = False
+run_swucb1 = True
+
+test_windows = False
 
 t_horizon = Data.t_horizon
 
-for K in K_vals:
-    print("\nK: {}".format(K))
-    thompson_window_size = int(np.sqrt(t_horizon)*K)
-    ucb1_window_size = int(np.sqrt(t_horizon)*K)
+def perform_experiments(n_experiments=10, K_SWUCB1=1.0, K_SWTS=1.0):
 
-    n_experiments = 10
+    print("\nK: {}, {}".format(K_SWUCB1, K_SWTS))
+    thompson_window_size = int(np.sqrt(t_horizon)*K_SWTS)
+    ucb1_window_size = int(np.sqrt(t_horizon)*K_SWUCB1)
 
     ts_reward_per_experiment = []
     ucb1_reward_per_experiment = []
@@ -143,197 +141,201 @@ for K in K_vals:
                 swucb1_instantaneous_regret[cumulative_samples[i - 1]: cumulative_samples[i]] = opt_per_phases[i] - \
                             np.mean(swucb1_reward_per_experiment, axis=0)[cumulative_samples[i-1] : cumulative_samples[i]]
 
-    if run_ts and run_ucb1:
-        plt.figure(0)
-        plt.title("Reward TS and UCB1")
-        plt.ylabel("Reward")
-        plt.xlabel("t")
-        plt.plot(np.mean(ts_reward_per_experiment, axis=0), 'r')
-        plt.plot(np.mean(ucb1_reward_per_experiment, axis=0), 'b')
-        plt.plot(opt_per_round, '--k')
-        plt.legend(["TS", "UCB1", "Optimum"])
-        plt.show()
+    if not test_windows:
+        if run_ts and run_ucb1:
+            plt.figure(0)
+            plt.title("Reward TS and UCB1")
+            plt.ylabel("Reward")
+            plt.xlabel("t")
+            plt.plot(np.mean(ts_reward_per_experiment, axis=0), 'r')
+            plt.plot(np.mean(ucb1_reward_per_experiment, axis=0), 'b')
+            plt.plot(opt_per_round, '--k')
+            plt.legend(["TS", "UCB1", "Optimum"])
+            plt.show()
 
-    if run_swts and run_swucb1:
-        plt.figure(1)
-        plt.title("Reward SWTS and SWUCB1")
-        plt.ylabel("Reward")
-        plt.xlabel("t")
-        plt.plot(np.mean(swts_reward_per_experiment, axis=0), 'r')
-        plt.plot(np.mean(swucb1_reward_per_experiment, axis=0), 'b')
-        plt.plot(opt_per_round, '--k')
-        plt.legend(["SWTS = {}".format(thompson_window_size), "SWUCB1 = {}".format(ucb1_window_size), "Optimum"])
-        plt.show()
+        if run_swts and run_swucb1:
+            plt.figure(1)
+            plt.title("Reward SWTS and SWUCB1")
+            plt.ylabel("Reward")
+            plt.xlabel("t")
+            plt.plot(np.mean(swts_reward_per_experiment, axis=0), 'r')
+            plt.plot(np.mean(swucb1_reward_per_experiment, axis=0), 'b')
+            plt.plot(opt_per_round, '--k')
+            plt.legend(["SWTS = {}".format(thompson_window_size), "SWUCB1 = {}".format(ucb1_window_size), "Optimum"])
+            plt.show()
 
-    if run_ts:
-        plt.figure(2)
-        plt.title("Reward TS")
-        plt.ylabel("Reward")
-        plt.xlabel("t")
-        plt.plot(np.mean(ts_reward_per_experiment, axis=0), 'r')
-        plt.plot(opt_per_round, '--k')
-        plt.legend(["TS", "Optimum"])
-        plt.show()
+        if run_ts:
+            plt.figure(2)
+            plt.title("Reward TS")
+            plt.ylabel("Reward")
+            plt.xlabel("t")
+            plt.plot(np.mean(ts_reward_per_experiment, axis=0), 'r')
+            plt.plot(opt_per_round, '--k')
+            plt.legend(["TS", "Optimum"])
+            plt.show()
 
-    if run_ucb1:
-        plt.figure(2)
-        plt.title("Reward UCB1")
-        plt.ylabel("Reward")
-        plt.xlabel("t")
-        plt.plot(np.mean(ucb1_reward_per_experiment, axis=0), 'r')
-        plt.plot(opt_per_round, '--k')
-        plt.legend(["UCB1", "Optimum"])
-        plt.show()
+        if run_ucb1:
+            plt.figure(2)
+            plt.title("Reward UCB1")
+            plt.ylabel("Reward")
+            plt.xlabel("t")
+            plt.plot(np.mean(ucb1_reward_per_experiment, axis=0), 'r')
+            plt.plot(opt_per_round, '--k')
+            plt.legend(["UCB1", "Optimum"])
+            plt.show()
+
+        if run_swts:
+            plt.figure(3)
+            plt.title("Reward SWTS")
+            plt.ylabel("Reward")
+            plt.xlabel("t")
+            plt.plot(np.mean(swts_reward_per_experiment, axis=0), 'r')
+            plt.plot(opt_per_round, '--k')
+            plt.legend(["SWTS = {}".format(thompson_window_size), "Optimum"])
+            plt.show()
+
+        if run_swucb1:
+            plt.figure(5)
+            plt.title("Reward SWUCB1")
+            plt.ylabel("Reward")
+            plt.xlabel("t")
+            plt.plot(np.mean(swucb1_reward_per_experiment, axis=0), 'r')
+            plt.plot(opt_per_round, '--k')
+            plt.legend(["SWUCB1 = {}".format(ucb1_window_size), "Optimum"])
+            plt.show()
+
+        if run_ts and run_ucb1:
+            plt.figure(6)
+            plt.title("Regret TS and UCB1")
+            plt.ylabel("Regret")
+            plt.xlabel("t")
+            plt.plot(np.cumsum(ts_instantaneous_regret), 'r')
+            plt.plot(np.cumsum(ucb1_instantaneous_regret), 'b')
+            plt.legend(["TS", "UCB1"])
+            plt.show()
+
+        if run_swts and run_swucb1:
+            plt.figure(7)
+            plt.title("Regret SWTS and SWUCB1")
+            plt.ylabel("Regret")
+            plt.xlabel("t")
+            plt.plot(np.cumsum(swts_instantaneous_regret), 'r')
+            plt.plot(np.cumsum(swucb1_instantaneous_regret), 'b')
+            plt.legend(["SWTS = {}".format(thompson_window_size), "SWUCB1 = {}".format(ucb1_window_size)])
+            plt.show()
+
+        if run_ts:
+            plt.figure(8)
+            plt.title("Regret TS")
+            plt.ylabel("Regret")
+            plt.xlabel("t")
+            plt.plot(np.cumsum(ts_instantaneous_regret), 'r')
+            plt.legend(["TS"])
+            plt.show()
+
+        if run_swts:
+            plt.figure(9)
+            plt.title("Regret SWTS")
+            plt.ylabel("Regret")
+            plt.xlabel("t")
+            plt.plot(np.cumsum(swts_instantaneous_regret), 'r')
+            plt.legend(["SWTS = {}".format(thompson_window_size)])
+            plt.show()
+
+        if run_ucb1:
+            plt.figure(10)
+            plt.title("Regret UCB1")
+            plt.ylabel("Regret")
+            plt.xlabel("t")
+            plt.plot(np.cumsum(ucb1_instantaneous_regret), 'r')
+            plt.legend(["UCB1"])
+            plt.show()
+
+        if run_swucb1:
+            plt.figure(11)
+            plt.title("Regret SWUCB1")
+            plt.ylabel("Regret")
+            plt.xlabel("t")
+            plt.plot(np.cumsum(swucb1_instantaneous_regret), 'r')
+            plt.legend(["SWUCB1 = {}".format(ucb1_window_size)])
+            plt.show()
+
+        if run_ucb1 and run_swucb1:
+            plt.figure(12)
+            plt.title("Reward UCB1 and SWUCB1 ")
+            plt.ylabel("Reward")
+            plt.xlabel("t")
+            plt.plot(np.mean(ucb1_reward_per_experiment, axis=0), 'r')
+            plt.plot(np.mean(swucb1_reward_per_experiment, axis=0), 'b')
+            plt.plot(opt_per_round, '--k')
+            plt.legend(["UCB1", "SWUCB1 = {}".format(ucb1_window_size), "Optimum"])
+            plt.show()
+
+        if run_ts and run_swts:
+            plt.figure(13)
+            plt.title("Reward TS and SWTS")
+            plt.ylabel("Reward")
+            plt.xlabel("t")
+            plt.plot(np.mean(ts_reward_per_experiment, axis=0), 'r')
+            plt.plot(np.mean(swts_reward_per_experiment, axis=0), 'b')
+            plt.plot(opt_per_round, '--k')
+            plt.legend(["TS", "SWTS = {}".format(thompson_window_size), "Optimum"])
+            plt.show()
+
+        if run_ucb1 and run_swucb1:
+            plt.figure(14)
+            plt.title("Regret UCB1 and SWUCB1")
+            plt.xlabel("t")
+            plt.ylabel("Regret")
+            plt.plot(np.cumsum(ucb1_instantaneous_regret), 'r')
+            plt.plot(np.cumsum(swucb1_instantaneous_regret), 'b')
+            plt.legend(["UCB1", "SWUCB1 = {}".format(ucb1_window_size)])
+            plt.show()
+
+        if run_ts and run_swts:
+            plt.figure(15)
+            plt.title("Regret TS and SWTS")
+            plt.xlabel("t")
+            plt.ylabel("Regret")
+            plt.plot(np.cumsum(ts_instantaneous_regret), 'r')
+            plt.plot(np.cumsum(swts_instantaneous_regret), 'b')
+            plt.legend(["TS", "SWTS = {}".format(thompson_window_size)])
+            plt.show()
+    else:
+        if run_swts:
+            swts_regret_per_k.append(np.cumsum(swts_instantaneous_regret))
+        if run_swucb1:
+            swucb1_regret_per_k.append(np.cumsum(swucb1_instantaneous_regret))
+
+
+if test_windows:
+    for K in K_vals:
+        perform_experiments(n_experiments=100, K_SWUCB1=K, K_SWTS=K)
 
     if run_swts:
-        plt.figure(3)
-        plt.title("Reward SWTS")
-        plt.ylabel("Reward")
-        plt.xlabel("t")
-        plt.plot(np.mean(swts_reward_per_experiment, axis=0), 'r')
-        plt.plot(opt_per_round, '--k')
-        plt.legend(["SWTS = {}".format(thompson_window_size), "Optimum"])
-        plt.show()
-
-    if run_swucb1:
-        plt.figure(5)
-        plt.title("Reward SWUCB1")
-        plt.ylabel("Reward")
-        plt.xlabel("t")
-        plt.plot(np.mean(swucb1_reward_per_experiment, axis=0), 'r')
-        plt.plot(opt_per_round, '--k')
-        plt.legend(["SWUCB1 = {}".format(ucb1_window_size), "Optimum"])
-        plt.show()
-
-    if run_ts and run_ucb1:
-        plt.figure(6)
-        plt.title("Regret TS and UCB1")
-        plt.ylabel("Regret")
-        plt.xlabel("t")
-        plt.plot(np.cumsum(ts_instantaneous_regret), 'r')
-        plt.plot(np.cumsum(ucb1_instantaneous_regret), 'b')
-        plt.legend(["TS", "UCB1"])
-        plt.show()
-
-    if run_swts and run_swucb1:
-        plt.figure(7)
-        plt.title("Regret SWTS and SWUCB1")
-        plt.ylabel("Regret")
-        plt.xlabel("t")
-        plt.plot(np.cumsum(swts_instantaneous_regret), 'r')
-        plt.plot(np.cumsum(swucb1_instantaneous_regret), 'b')
-        plt.legend(["SWTS = {}".format(thompson_window_size), "SWUCB1 = {}".format(ucb1_window_size)])
-        plt.show()
-
-    if run_ts:
-        plt.figure(8)
-        plt.title("Regret TS")
-        plt.ylabel("Regret")
-        plt.xlabel("t")
-        plt.plot(np.cumsum(ts_instantaneous_regret), 'r')
-        plt.legend(["TS"])
-        plt.show()
-
-    if run_swts:
-        plt.figure(9)
+        plt.figure(16)
         plt.title("Regret SWTS")
-        plt.ylabel("Regret")
         plt.xlabel("t")
-        plt.plot(np.cumsum(swts_instantaneous_regret), 'r')
-        plt.legend(["SWTS = {}".format(thompson_window_size)])
-        plt.show()
-
-    if run_ucb1:
-        plt.figure(10)
-        plt.title("Regret UCB1")
         plt.ylabel("Regret")
-        plt.xlabel("t")
-        plt.plot(np.cumsum(ucb1_instantaneous_regret), 'r')
-        plt.legend(["UCB1"])
+        legend = []
+        for i in range(len(K_vals)):
+            plt.plot(swts_regret_per_k[i])
+            legend.append("SWTS {}".format(int(np.sqrt(Data.t_horizon) * K_vals[i])))
+        legend[len(K_vals) - 1] = "TS"
+        plt.legend(legend)
         plt.show()
 
     if run_swucb1:
-        plt.figure(11)
+        plt.figure(17)
         plt.title("Regret SWUCB1")
-        plt.ylabel("Regret")
-        plt.xlabel("t")
-        plt.plot(np.cumsum(swucb1_instantaneous_regret), 'r')
-        plt.legend(["SWUCB1 = {}".format(ucb1_window_size)])
-        plt.show()
-
-    if run_ucb1 and run_swucb1:
-        plt.figure(12)
-        plt.title("Reward UCB1 and SWUCB1 ")
-        plt.ylabel("Reward")
-        plt.xlabel("t")
-        plt.plot(np.mean(ucb1_reward_per_experiment, axis=0), 'r')
-        plt.plot(np.mean(swucb1_reward_per_experiment, axis=0), 'b')
-        plt.plot(opt_per_round, '--k')
-        plt.legend(["UCB1", "SWUCB1 = {}".format(ucb1_window_size), "Optimum"])
-        plt.show()
-
-    if run_ts and run_swts:
-        plt.figure(13)
-        plt.title("Reward TS and SWTS")
-        plt.ylabel("Reward")
-        plt.xlabel("t")
-        plt.plot(np.mean(ts_reward_per_experiment, axis=0), 'r')
-        plt.plot(np.mean(swts_reward_per_experiment, axis=0), 'b')
-        plt.plot(opt_per_round, '--k')
-        plt.legend(["TS", "SWTS = {}".format(thompson_window_size), "Optimum"])
-        plt.show()
-
-    if run_ucb1 and run_swucb1:
-        plt.figure(14)
-        plt.title("Regret UCB1 and SWUCB1")
         plt.xlabel("t")
         plt.ylabel("Regret")
-        plt.plot(np.cumsum(ucb1_instantaneous_regret), 'r')
-        plt.plot(np.cumsum(swucb1_instantaneous_regret), 'b')
-        plt.legend(["UCB1", "SWUCB1 = {}".format(ucb1_window_size)])
+        legend = []
+        for i in range(len(K_vals)):
+            plt.plot(swucb1_regret_per_k[i])
+            legend.append("SWUCB1 {}".format(int(np.sqrt(Data.t_horizon) * K_vals[i])))
+        legend[len(K_vals)-1] = "UCB1"
+        plt.legend(legend)
         plt.show()
-
-    if run_ts and run_swts:
-        plt.figure(15)
-        plt.title("Regret TS and SWTS")
-        plt.xlabel("t")
-        plt.ylabel("Regret")
-        plt.plot(np.cumsum(ts_instantaneous_regret), 'r')
-        plt.plot(np.cumsum(swts_instantaneous_regret), 'b')
-        plt.legend(["TS", "SWTS = {}".format(thompson_window_size)])
-        plt.show()
-
-    if run_swts:
-        # swts_reward_per_k.append(np.mean(swts_reward_per_experiment))
-        swts_regret_per_k.append(np.cumsum(swts_instantaneous_regret))
-
-    if run_swucb1:
-        # swucb1_reward_per_k.append(np.mean(swucb1_reward_per_experiment))
-        swucb1_regret_per_k.append(np.cumsum(swucb1_instantaneous_regret))
-
-if run_swts:
-    plt.figure(16)
-    plt.title("Regret SWTS")
-    plt.xlabel("t")
-    plt.ylabel("Regret")
-    legend = []
-    for i in range(len(K_vals)):
-        plt.plot(swts_regret_per_k[i])
-        legend.append("SWTS {}".format(int(np.sqrt(Data.t_horizon) * K_vals[i])))
-    legend[len(K_vals) - 1] = "TS"
-    plt.legend(legend)
-    plt.show()
-
-if run_swucb1:
-    plt.figure(17)
-    plt.title("Regret SWUCB1")
-    plt.xlabel("t")
-    plt.ylabel("Regret")
-    legend = []
-    for i in range(len(K_vals)):
-        plt.plot(swucb1_regret_per_k[i])
-        legend.append("SWUCB1 {}".format(int(np.sqrt(Data.t_horizon) * K_vals[i])))
-    legend[len(K_vals)-1] = "UCB1"
-    plt.legend(legend)
-    plt.show()
-
+else:
+    perform_experiments(n_experiments=10000, K_SWUCB1=0.1, K_SWTS=1.0)
