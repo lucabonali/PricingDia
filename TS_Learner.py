@@ -31,12 +31,15 @@ class TS_Learner(Learner):
         idx = np.argmax(samples_from_beta * self.margins)
         return idx
 
-    #return the best expected reward and the arm
-    def get_best(self):
+    #return the best expected reward and the arm, considering the lower bound
+    def get_best(self, delta=0.1):
+        bound = np.sqrt(-(np.log(delta))/len(self.collected_rewards))
+        print("bound = {}".format(bound))
         samples_from_beta = np.random.beta(self.beta_parameters[:, 0], self.beta_parameters[:, 1])
-        idx = np.argmax(samples_from_beta * self.margins)
-        best_reward = np.max(samples_from_beta * self.margins)
+        idx = np.argmax((samples_from_beta - bound) * self.margins)
+        best_reward = np.max((samples_from_beta - bound) * self.margins)
         return idx, best_reward
+
 
 
     def update(self, pulled_arm, reward):
