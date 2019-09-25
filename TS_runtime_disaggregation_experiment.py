@@ -173,7 +173,7 @@ for e in range(n_experiments):
     for t in range(0, t_horizon):
 
         #if it's the firts day of the week, the alghoritm check if is better the aggregate cure or the disaggregate ones
-        if ((t % Data.samples_per_week) == 0) and aggregate: #and force_after == 0:
+        if ((t % Data.samples_per_week) == 0) and t != 0 and aggregate: #and force_after == 0:
             best_agg_idx, aggregate, disaggregation_time = check_aggregation(aggregations, t)
 
             if best_agg_idx != 0 and len(aggregations) == 5:

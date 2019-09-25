@@ -30,8 +30,10 @@ class UCB1_Learner(Learner):
         return pulled_arm
 
     #return the best expected reward and the arm
-    def get_best(self):
-        margin_bounds = self.bounds * self.margins
+    def get_best(self, delta = 0.9):
+        bound = np.sqrt(-(np.log(delta))/len(self.collected_rewards))
+
+        margin_bounds = (self.bounds - bound) * self.margins
         idxs = np.argwhere(margin_bounds == margin_bounds.max()).reshape(-1)
         idx = np.random.choice(idxs)
         best_reward = margin_bounds.max()
